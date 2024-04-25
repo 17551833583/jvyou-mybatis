@@ -1,4 +1,4 @@
-package com.jvyou.mybatis.proxy.staticPro;
+package com.jvyou.mybatis.proxy;
 
 /**
  * @author 橘柚

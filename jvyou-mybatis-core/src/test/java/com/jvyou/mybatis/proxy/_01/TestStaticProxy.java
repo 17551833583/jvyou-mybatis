@@ -1,5 +1,7 @@
-package com.jvyou.mybatis.proxy.staticPro;
+package com.jvyou.mybatis.proxy._01;
 
+import com.jvyou.mybatis.proxy.Marry;
+import com.jvyou.mybatis.proxy.Spouse;
 import org.junit.jupiter.api.Test;
 
 /**

@@ -1,4 +1,6 @@
-package com.jvyou.mybatis.proxy.staticPro;
+package com.jvyou.mybatis.proxy._01;
+
+import com.jvyou.mybatis.proxy.Marry;
 
 /**
  * @author 橘柚
