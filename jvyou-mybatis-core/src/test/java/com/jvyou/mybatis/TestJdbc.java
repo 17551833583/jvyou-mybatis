@@ -1,6 +1,8 @@
 package com.jvyou.mybatis;
 
-import org.junit.Test;
+
+
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +18,7 @@ import java.sql.ResultSet;
 public class TestJdbc {
 
     @Test
-    public void testJdbc() throws Exception {
+     void testJdbc() throws Exception {
         // 1.加载数据库驱动
         Class.forName("com.mysql.cj.jdbc.Driver");
         // 2.获取数据库链接

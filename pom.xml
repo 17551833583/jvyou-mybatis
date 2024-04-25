@@ -17,11 +17,11 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>4.13.1</junit.version>
+        <junit.version>5.9.2</junit.version>
         <lombok.version>1.18.16</lombok.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <hutool.version>5.8.3</hutool.version>
-        <guava.version>31.1-jre</guava.version>
+        <hutool.version>5.8.25</hutool.version>
+        <guava.version>33.0.0-jre</guava.version>
         <mysql.version>8.0.32</mysql.version>
         <cglib.version>3.3.0</cglib.version>
         <dom4j.version>1.6.1</dom4j.version>
@@ -30,10 +30,10 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- 测试 -->
+            <!--单元测试-->
             <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-api</artifactId>
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -95,7 +95,7 @@
 
             <dependency>
                 <groupId>com.jvyou</groupId>
-                <artifactId>jvyou-mybatis</artifactId>
+                <artifactId>jvyou-mybatis-core</artifactId>
                 <version>${version}</version>
             </dependency>
         </dependencies>
