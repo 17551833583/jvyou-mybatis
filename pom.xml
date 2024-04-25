@@ -92,6 +92,12 @@
                 <artifactId>jaxen</artifactId>
                 <version>${gaxen.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>com.jvyou</groupId>
+                <artifactId>jvyou-mybatis</artifactId>
+                <version>${version}</version>
+            </dependency>
         </dependencies>
 
     </dependencyManagement>
