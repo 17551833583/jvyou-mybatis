@@ -41,6 +41,7 @@
             <groupId>com.jvyou</groupId>
             <artifactId>jvyou-mybatis-core</artifactId>
         </dependency>
+        
     </dependencies>
 
 </project>

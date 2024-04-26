@@ -1,4 +1,4 @@
-package com.jvyou.mybatis.annotions;
+package com.jvyou.mybatis.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
