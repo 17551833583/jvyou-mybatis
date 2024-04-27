@@ -27,4 +27,9 @@ public class Configuration {
         mappedStatements.put(mappedStatement.getId(), mappedStatement);
     }
 
+    public MappedStatement getMappedStatement(String id) {
+        // 根据ID从映射语句集合中获取映射语句对象
+        return mappedStatements.get(id);
+    }
+
 }

@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.binding;
 
+import com.jvyou.mybatis.session.Configuration;
+
 import java.lang.reflect.Proxy;
 
 /**
@@ -17,12 +19,12 @@ public class MapperProxyFactory {
      * @param <T>         mapper 接口
      * @return 获取 Mapper 接口的代理对象
      */
-    public <T> T getProxy(Class<T> mapperClass) {
+    public <T> T getProxy(Class<T> mapperClass, Configuration configuration) {
 
         Object o = Proxy.newProxyInstance(
                 mapperClass.getClassLoader(),
                 new Class[]{mapperClass},
-                new MapperProxyInvocationHandler()
+                new MapperProxyInvocationHandler(configuration,mapperClass)
         );
         // 使用 cast 转换类型而不是类型强制转换可以避免警告
         // cast 类型转换提供了更强的类型检查机，处理泛型时更具灵活性

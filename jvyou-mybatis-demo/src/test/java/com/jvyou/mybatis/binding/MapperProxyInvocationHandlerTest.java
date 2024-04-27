@@ -1,9 +1,10 @@
 package com.jvyou.mybatis.binding;
 
 import cn.hutool.json.JSONUtil;
-import com.jvyou.mybatis.binding.MapperProxyFactory;
+import com.jvyou.mybatis.builder.XMLConfigBuilder;
 import com.jvyou.mybatis.entity.User;
 import com.jvyou.mybatis.mapper.UserMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,10 +17,24 @@ import java.util.List;
  */
 public class MapperProxyInvocationHandlerTest {
 
+    private UserMapper userMapper;
+
+    @BeforeEach
+    void before() {
+        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
+        userMapper = new MapperProxyFactory().getProxy(UserMapper.class, xmlConfigBuilder.parse());
+    }
+
     @Test
     void test() {
-        UserMapper proxy = new MapperProxyFactory().getProxy(UserMapper.class);
-        List<User> users = proxy.getAll("jvyou", 1);
+        long start = System.currentTimeMillis();
+        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
+        userMapper = new MapperProxyFactory().getProxy(UserMapper.class, xmlConfigBuilder.parse());
+        List<User> users = userMapper.getAll("jvyou", 1);
+        long end = System.currentTimeMillis();
+        System.out.println("耗时：" + (end - start));
+        List<User> users2 = userMapper.getAll("jvyou", 1);
+        System.out.println("耗时：" + (System.currentTimeMillis() - end));
         users.forEach((user) -> {
             System.out.println(JSONUtil.parse(user));
         });
@@ -27,14 +42,12 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void test2() {
-        UserMapper proxy = new MapperProxyFactory().getProxy(UserMapper.class);
-        proxy.getOne("jvyou", 1);
+        userMapper.getOne("jvyou", 1);
     }
 
     @Test
     void test3() {
-        UserMapper proxy = new MapperProxyFactory().getProxy(UserMapper.class);
-        proxy.count();
+        userMapper.count();
     }
 
 }

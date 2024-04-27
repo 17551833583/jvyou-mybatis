@@ -1,15 +1,19 @@
 package com.jvyou.mybatis.binding;
 
 import com.jvyou.mybatis.annotations.Param;
-import com.jvyou.mybatis.annotations.Select;
 import com.jvyou.mybatis.constant.SQLKeyword;
+import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.parser.GenericTokenParser;
 import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
+import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.type.IntegerParamHandler;
 import com.jvyou.mybatis.type.ParamTypeHandler;
 import com.jvyou.mybatis.type.StringParamHandler;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.sql.*;
 import java.util.*;
 
@@ -24,15 +28,25 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
     @SuppressWarnings("rawtypes")
     private final Map<Class, ParamTypeHandler> paramTypeHandlerMap = new HashMap<>();
 
-    public MapperProxyInvocationHandler() {
+    private final Configuration configuration;
+
+    private final Class<?> mapperClass;
+
+    public MapperProxyInvocationHandler(Configuration configuration, Class<?> mapperClass) {
+        this.mapperClass = mapperClass;
+        this.configuration = configuration;
         paramTypeHandlerMap.put(Integer.class, new IntegerParamHandler());
         paramTypeHandlerMap.put(String.class, new StringParamHandler());
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Select selectAnnotation = method.getAnnotation(Select.class);
-        String originalSql = selectAnnotation.value();
+
+        MappedStatement mappedStatement = configuration.getMappedStatement(mapperClass.getName() + "." + method.getName());
+
+        String originalSql = mappedStatement.getSql();
+        // 获取 Mapper 方法的返回值类型
+        Class<?> returnType = mappedStatement.getResultType();
 
         // 解析 SQL
         ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
@@ -64,8 +78,6 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
 
         ps.execute();
 
-        // 获取 Mapper 方法的返回值类型
-        Class<?> returnType = getMethodReturnType(method);
 
         // 获取结果集
         ResultSet resultSet = ps.getResultSet();
@@ -111,40 +123,6 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
         String username = "root";
         String password = "123456";
         return DriverManager.getConnection(url, username, password);
-    }
-
-
-    /**
-     * 获取方法返回值的类型。
-     * 这个方法能够处理普通类型、参数化类型以及数组等返回类型。对于参数化类型，会尝试返回第一个泛型参数的Class类型，
-     * 如果无法获取到，则返回参数化类型的原始类型。对于非参数化类型，直接返回其Class类型。
-     * 如果返回类型为数组，则该方法当前返回null，可根据需求进行相应处理。
-     *
-     * @param method 需要获取返回类型的方法对象
-     * @return 返回值的类型。如果是参数化类型，返回第一个泛型参数的Class类型或参数化类型的原始类型；
-     * 如果是普通类型，返回其Class类型；如果是数组等其他情况，当前返回null。
-     */
-    private Class<?> getMethodReturnType(Method method) {
-        Type returnType = method.getGenericReturnType();
-
-        if (returnType instanceof ParameterizedType) {
-            // 处理参数化类型
-            ParameterizedType parameterizedType = (ParameterizedType) returnType;
-            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
-            if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
-                // 返回第一个泛型参数的Class类型
-                return (Class<?>) actualTypeArguments[0];
-            } else {
-                // 如果无法获取到泛型参数的Class类型，则返回原始类型
-                return (Class<?>) parameterizedType.getRawType();
-            }
-        } else if (returnType instanceof Class) {
-            // 处理普通类型
-            return (Class<?>) returnType;
-        } else {
-            // 处理其他情况，比如数组等
-            return null; // 或者根据需求进行相应处理
-        }
     }
 
 
