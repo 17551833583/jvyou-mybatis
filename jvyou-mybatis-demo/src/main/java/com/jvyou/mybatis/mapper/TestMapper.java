@@ -12,15 +12,10 @@ import java.util.List;
  * @Date 2024/4/25 20:12
  * @Description
  */
-public interface UserMapper {
+public interface TestMapper {
 
-    @Select("select * from t_user where id=#{id} and name=#{name}")
-    List<User> getAll(@Param("name") String name, @Param("id") Integer id);
 
     @Select("select * from t_user where id=#{id} and name=#{name}")
     User getOne(@Param("name") String name, @Param("id") Integer id);
-
-    @Select("select count(*) from t_user")
-    Integer count();
 
 }

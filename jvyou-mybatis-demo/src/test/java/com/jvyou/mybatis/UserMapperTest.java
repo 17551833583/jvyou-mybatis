@@ -1,4 +1,4 @@
-package com.jvyou.mybatis.mapper;
+package com.jvyou.mybatis;
 
 
 import org.junit.jupiter.api.Test;

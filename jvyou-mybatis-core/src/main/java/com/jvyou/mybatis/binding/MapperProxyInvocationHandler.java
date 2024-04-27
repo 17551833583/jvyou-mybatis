@@ -9,13 +9,9 @@ import com.jvyou.mybatis.type.IntegerParamHandler;
 import com.jvyou.mybatis.type.ParamTypeHandler;
 import com.jvyou.mybatis.type.StringParamHandler;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+import java.lang.reflect.*;
 import java.sql.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author 橘柚
@@ -67,17 +63,44 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
         }
 
         ps.execute();
+
+        // 获取 Mapper 方法的返回值类型
+        Class<?> returnType = getMethodReturnType(method);
+
         // 获取结果集
         ResultSet resultSet = ps.getResultSet();
+        List result = new ArrayList();
+
+        Field[] fields = returnType.getDeclaredFields();
+
         while (resultSet.next()) {
-            System.out.println(resultSet.getString("name") + "--" + resultSet.getInt("age"));
+            Object obj = returnType.newInstance();
+            for (Field field : fields) {
+                // 获取字段名称
+                String fieldName = field.getName();
+                // 获取字段值
+                Object fieldValue = paramTypeHandlerMap.get(field.getType()).getResult(resultSet, fieldName);
+                // 设置字段值
+                field.setAccessible(true);
+                field.set(obj, fieldValue);
+            }
+            result.add(obj);
         }
         // 5.关闭数据库链接
         resultSet.close();
         ps.close();
         connection.close();
 
-        return null;
+        // 返回值是数组类型
+        if (returnType.isArray()) {
+            return result.toArray();
+        }
+        // 返回值是集合类型
+        if (Collection.class.isAssignableFrom(method.getReturnType())) {
+            return result;
+        }
+        // 返回值是单个对象
+        return result.get(0);
     }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {
@@ -89,4 +112,40 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
         String password = "123456";
         return DriverManager.getConnection(url, username, password);
     }
+
+
+    /**
+     * 获取方法返回值的类型。
+     * 这个方法能够处理普通类型、参数化类型以及数组等返回类型。对于参数化类型，会尝试返回第一个泛型参数的Class类型，
+     * 如果无法获取到，则返回参数化类型的原始类型。对于非参数化类型，直接返回其Class类型。
+     * 如果返回类型为数组，则该方法当前返回null，可根据需求进行相应处理。
+     *
+     * @param method 需要获取返回类型的方法对象
+     * @return 返回值的类型。如果是参数化类型，返回第一个泛型参数的Class类型或参数化类型的原始类型；
+     * 如果是普通类型，返回其Class类型；如果是数组等其他情况，当前返回null。
+     */
+    private Class<?> getMethodReturnType(Method method) {
+        Type returnType = method.getGenericReturnType();
+
+        if (returnType instanceof ParameterizedType) {
+            // 处理参数化类型
+            ParameterizedType parameterizedType = (ParameterizedType) returnType;
+            Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+            if (actualTypeArguments.length > 0 && actualTypeArguments[0] instanceof Class) {
+                // 返回第一个泛型参数的Class类型
+                return (Class<?>) actualTypeArguments[0];
+            } else {
+                // 如果无法获取到泛型参数的Class类型，则返回原始类型
+                return (Class<?>) parameterizedType.getRawType();
+            }
+        } else if (returnType instanceof Class) {
+            // 处理普通类型
+            return (Class<?>) returnType;
+        } else {
+            // 处理其他情况，比如数组等
+            return null; // 或者根据需求进行相应处理
+        }
+    }
+
+
 }

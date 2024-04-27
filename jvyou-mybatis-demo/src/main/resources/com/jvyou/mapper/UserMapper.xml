@@ -2,6 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jvyou.mybatis.mapper.UserMapper">
     <select id="getAll" resultType="com.jvyou.mybatis.entity.User">
-        select * from t_user where id=#{id} and name=#{name};
+        select *
+        from t_user
+        where id = #{id}
+          and name = #{name};
+    </select>
+    <select id="getOne" resultType="com.jvyou.mybatis.entity.User">
+        select *
+        from t_user
+        where id = #{id}
+          and name = #{name};
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        select count(*)
+        from t_user;
     </select>
 </mapper>

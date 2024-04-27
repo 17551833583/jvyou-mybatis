@@ -1,6 +1,7 @@
-package com.jvyou.mybatis.mapper;
+package com.jvyou.mybatis;
 
 import com.jvyou.mybatis.entity.User;
+import com.jvyou.mybatis.mapper.UserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
