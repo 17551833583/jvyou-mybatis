@@ -1,6 +1,6 @@
 package com.jvyou.mybatis.parser;
 
-import com.jvyou.mybatis.constant.Keyword;
+import com.jvyou.mybatis.constant.SymbolKeyword;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2024/4/26 14:09
  * @Description Mapper 参数标记处理器
  */
-public class ParameterMappingTokenHandler implements TokenHandler, Keyword {
+public class ParameterMappingTokenHandler implements TokenHandler, SymbolKeyword {
 
     private final List<String> params = new ArrayList<>();
 

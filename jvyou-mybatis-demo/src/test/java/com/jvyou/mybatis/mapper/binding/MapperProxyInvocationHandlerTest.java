@@ -15,7 +15,7 @@ public class MapperProxyInvocationHandlerTest {
     @Test
     void test() {
         UserMapper proxy = new MapperProxyFactory().getProxy(UserMapper.class);
-        proxy.getAll();
+        proxy.getAll("jvyou",1);
     }
 
 }

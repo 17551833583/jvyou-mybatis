@@ -14,8 +14,5 @@ class UserMapperTest {
     @Test
     void getAll() {
 
-        UserMapper userMapper = null;
-
-
     }
 }

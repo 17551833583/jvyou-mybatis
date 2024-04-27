@@ -8,7 +8,7 @@ import com.jvyou.mybatis.exception.JvyouMybatisException;
  * @version 1.0-SNAPSHOT
  * @Date 2024/4/26 13:25
  * @Description 通用SQL令牌解析器
- * 将“”
+ * 将“select * from t_user where id=#{id} and name=#{name}”
  * ===>"select * from t_user where id=? and name=?"，同时存储 SQL 中占位符对应的参数名称
  */
 public class GenericTokenParser {
