@@ -1,9 +1,11 @@
-package com.jvyou.mybatis.session;
+package com.jvyou.mybatis.session.defaults;
 
+import com.jvyou.mybatis.binding.MapperProxyFactory;
 import com.jvyou.mybatis.exception.TooManyResultsException;
-import com.jvyou.mybatis.executor.SimpleSqlExecutor;
 import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.MappedStatement;
+import com.jvyou.mybatis.session.Configuration;
+import com.jvyou.mybatis.session.SqlSession;
 
 import java.util.List;
 
@@ -60,7 +62,7 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public <T> T getMapper(Class<T> mapperClass) {
-        return null;
+        return new MapperProxyFactory().getProxy(mapperClass, this);
     }
 
     @Override

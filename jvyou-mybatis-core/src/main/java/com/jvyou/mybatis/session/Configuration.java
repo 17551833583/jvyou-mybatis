@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.session;
 
+import com.jvyou.mybatis.executor.SimpleSqlExecutor;
+import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.type.IntegerParamHandler;
 import com.jvyou.mybatis.type.ParamTypeHandler;
@@ -59,6 +61,10 @@ public class Configuration {
     public ParamTypeHandler getParamTypeHandler(Class type) {
         // 从参数类型处理器映射中获取与给定类型相匹配的处理器
         return paramTypeHandlerMap.get(type);
+    }
+
+    public SqlExecutor newSqlExecutor() {
+        return new SimpleSqlExecutor(this);
     }
 
 }

@@ -4,6 +4,11 @@ import cn.hutool.json.JSONUtil;
 import com.jvyou.mybatis.builder.XMLConfigBuilder;
 import com.jvyou.mybatis.entity.User;
 import com.jvyou.mybatis.mapper.UserMapper;
+import com.jvyou.mybatis.session.Configuration;
+import com.jvyou.mybatis.session.SqlSession;
+import com.jvyou.mybatis.session.SqlSessionFactory;
+import com.jvyou.mybatis.session.SqlSessionFactoryBuilder;
+import com.jvyou.mybatis.session.defaults.DefaultSqlSeiionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,23 +26,15 @@ public class MapperProxyInvocationHandlerTest {
 
     @BeforeEach
     void before() {
-        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
-        userMapper = new MapperProxyFactory().getProxy(UserMapper.class, xmlConfigBuilder.parse());
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build();
+        SqlSession session = sqlSessionFactory.openSession();
+        userMapper = session.getMapper(UserMapper.class);
     }
 
     @Test
     void test() {
-        long start = System.currentTimeMillis();
-        XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
-        userMapper = new MapperProxyFactory().getProxy(UserMapper.class, xmlConfigBuilder.parse());
         List<User> users = userMapper.getAll("jvyou", 1);
-        long end = System.currentTimeMillis();
-        System.out.println("耗时：" + (end - start));
-        List<User> users2 = userMapper.getAll("jvyou", 1);
-        System.out.println("耗时：" + (System.currentTimeMillis() - end));
-        users.forEach((user) -> {
-            System.out.println(JSONUtil.parse(user));
-        });
+        System.out.println(JSONUtil.toJsonStr(users));
     }
 
     @Test

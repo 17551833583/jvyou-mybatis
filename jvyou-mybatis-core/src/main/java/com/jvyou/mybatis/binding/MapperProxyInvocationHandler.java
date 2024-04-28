@@ -2,12 +2,7 @@ package com.jvyou.mybatis.binding;
 
 import com.jvyou.mybatis.annotations.Param;
 import com.jvyou.mybatis.constant.SQLKeyword;
-import com.jvyou.mybatis.executor.SimpleSqlExecutor;
-import com.jvyou.mybatis.mapping.MappedStatement;
-import com.jvyou.mybatis.session.Configuration;
-import com.jvyou.mybatis.type.IntegerParamHandler;
-import com.jvyou.mybatis.type.ParamTypeHandler;
-import com.jvyou.mybatis.type.StringParamHandler;
+import com.jvyou.mybatis.session.SqlSession;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,14 +19,13 @@ import java.util.Map;
 public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeyword {
 
 
-
-    private final Configuration configuration;
+    private final SqlSession sqlSession;
 
     private final Class<?> mapperClass;
 
-    public MapperProxyInvocationHandler(Configuration configuration, Class<?> mapperClass) {
+    public MapperProxyInvocationHandler(SqlSession sqlSession, Class<?> mapperClass) {
         this.mapperClass = mapperClass;
-        this.configuration = configuration;
+        this.sqlSession = sqlSession;
     }
 
     @Override
@@ -49,10 +43,7 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
             }
         }
 
-        SimpleSqlExecutor simpleSqlExecutor = new SimpleSqlExecutor(configuration);
-        MappedStatement mappedStatement = configuration.getMappedStatement(mapperClass.getName() + "." + method.getName());
-
-        return simpleSqlExecutor.query(mappedStatement,paramMap);
+        return sqlSession.selectList(mapperClass.getName() + "." + method.getName(), paramMap);
 
     }
 
