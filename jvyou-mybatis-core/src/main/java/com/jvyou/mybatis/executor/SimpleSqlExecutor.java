@@ -27,7 +27,7 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
     }
 
     @Override
-    public <T> List<T> query(MappedStatement ms, Object parameter) throws Exception {
+    public <T> List<T> query(MappedStatement ms, Object parameter) {
         // 获取原始的 SQL
         String originalSql = ms.getSql();
         // 获取 Mapper 方法的返回值类型
@@ -36,48 +36,50 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
         ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
         GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
         String parsedSql = genericTokenParser.parse(originalSql);
-        // 获取数据库链接
-        Connection connection = getConnection();
-        PreparedStatement ps = connection.prepareStatement(parsedSql);
-        // 获取参数名称
-        List<String> params = tokenHandler.getParams();
 
-        Map<String, Object> paramMap = (Map<String, Object>) parameter;
-
-        // 填充参数
-        for (int i = 0; i < params.size(); i++) {
-            String param = params.get(i);
-            Object value = paramMap.get(param);
-            configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
-        }
-
-        ps.execute();
-
-
-        // 获取结果集
-        ResultSet resultSet = ps.getResultSet();
         List result = new ArrayList();
+        try {
+            // 获取数据库链接
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(parsedSql);
+            // 获取参数名称
+            List<String> params = tokenHandler.getParams();
 
-        Field[] fields = returnType.getDeclaredFields();
+            Map<String, Object> paramMap = (Map<String, Object>) parameter;
 
-        while (resultSet.next()) {
-            Object obj = returnType.newInstance();
-            for (Field field : fields) {
-                // 获取字段名称
-                String fieldName = field.getName();
-                // 获取字段值
-                Object fieldValue = configuration.getParamTypeHandler(field.getType()).getResult(resultSet, fieldName);
-                // 设置字段值
-                field.setAccessible(true);
-                field.set(obj, fieldValue);
+            // 填充参数
+            for (int i = 0; i < params.size(); i++) {
+                String param = params.get(i);
+                Object value = paramMap.get(param);
+                configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
             }
-            result.add(obj);
-        }
-        // 5.关闭数据库链接
-        resultSet.close();
-        ps.close();
-        connection.close();
+            ps.execute();
+            // 获取结果集
+            ResultSet resultSet = ps.getResultSet();
 
+
+            Field[] fields = returnType.getDeclaredFields();
+
+            while (resultSet.next()) {
+                Object obj = returnType.newInstance();
+                for (Field field : fields) {
+                    // 获取字段名称
+                    String fieldName = field.getName();
+                    // 获取字段值
+                    Object fieldValue = configuration.getParamTypeHandler(field.getType()).getResult(resultSet, fieldName);
+                    // 设置字段值
+                    field.setAccessible(true);
+                    field.set(obj, fieldValue);
+                }
+                result.add(obj);
+            }
+            // 5.关闭数据库链接
+            resultSet.close();
+            ps.close();
+            connection.close();
+        } catch (Exception e) {
+
+        }
         return result;
     }
 

@@ -3,9 +3,7 @@ package com.jvyou.mybatis;
 import com.jvyou.mybatis.entity.User;
 import com.jvyou.mybatis.mapper.UserMapper;
 import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.session.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -28,6 +26,13 @@ public class TestMybatis {
         SqlSessionFactory sessionFactory=new SqlSessionFactoryBuilder().build(is);
         //获取SqlSession对象
         SqlSession sqlSession=sessionFactory.openSession();
+
+        sqlSession.select("com.jvyou.mybatis.mapper.UserMapper.getAll", "jvyou", new ResultHandler() {
+            @Override
+            public void handleResult(ResultContext resultContext) {
+                System.out.println(resultContext.getResultObject());
+            }
+        });
 
         UserMapper mapper=sqlSession.getMapper(UserMapper.class);
         //执行Sql语句
