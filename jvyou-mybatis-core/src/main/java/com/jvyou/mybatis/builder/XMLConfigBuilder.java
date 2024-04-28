@@ -1,8 +1,12 @@
 package com.jvyou.mybatis.builder;
 
 import cn.hutool.core.util.ClassUtil;
+import com.jvyou.mybatis.annotations.Delete;
+import com.jvyou.mybatis.annotations.Insert;
 import com.jvyou.mybatis.annotations.Select;
+import com.jvyou.mybatis.annotations.Update;
 import com.jvyou.mybatis.mapping.MappedStatement;
+import com.jvyou.mybatis.mapping.SqlCommandType;
 import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.utils.TypeUtils;
 
@@ -31,14 +35,29 @@ public class XMLConfigBuilder {
             Method[] methods = aClass.getMethods();
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Select.class)) {
-                    Select select = method.getAnnotation(Select.class);
-                    String originalSql = select.value();
+                    String originalSql = "";
+                    SqlCommandType sqlCommandType = SqlCommandType.SELECT;
+                    if (method.isAnnotationPresent(Select.class)) {
+                        originalSql = method.getAnnotation(Select.class).value();
+                        sqlCommandType = SqlCommandType.SELECT;
+                    } else if (method.isAnnotationPresent(Update.class)) {
+                        originalSql = method.getAnnotation(Update.class).value();
+                        sqlCommandType = SqlCommandType.UPDATE;
+                    } else if (method.isAnnotationPresent(Insert.class)) {
+                        originalSql = method.getAnnotation(Insert.class).value();
+                        sqlCommandType = SqlCommandType.INSERT;
+                    } else if (method.isAnnotationPresent(Delete.class)) {
+                        originalSql = method.getAnnotation(Delete.class).value();
+                        sqlCommandType = SqlCommandType.DELETE;
+                    }
+
                     // 获取 Mapper 方法的返回值类型
                     Class<?> returnType = TypeUtils.getMethodReturnType(method);
                     MappedStatement mappedStatement = MappedStatement.builder()
                             .id(aClass.getName() + "." + method.getName())
                             .sql(originalSql)
                             .resultType(returnType)
+                            .sqlCommandType(sqlCommandType)
                             .build();
                     configuration.addMappedStatement(mappedStatement);
                 }

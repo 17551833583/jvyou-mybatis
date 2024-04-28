@@ -23,5 +23,7 @@ public class MappedStatement {
     private String sql;
     // 返回类型
     private Class<?> resultType;
+    // sql 类型
+    private SqlCommandType sqlCommandType;
 
 }

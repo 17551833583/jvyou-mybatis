@@ -1,7 +1,6 @@
 package com.jvyou.mybatis.mapper;
 
-import com.jvyou.mybatis.annotations.Param;
-import com.jvyou.mybatis.annotations.Select;
+import com.jvyou.mybatis.annotations.*;
 import com.jvyou.mybatis.entity.User;
 
 import java.util.List;
@@ -22,5 +21,14 @@ public interface UserMapper {
 
     @Select("select count(*) from t_user")
     Integer count();
+
+    @Insert("insert into t_user(name,age) values(#{user.name},#{user.age})")
+    Integer insert(@Param("user") User user);
+
+    @Update("update t_user set name=#{user.name},age=#{user.age} where id=#{user.id}")
+    Integer update(@Param("user") User user);
+
+    @Delete("delete from t_user where id=#{id}")
+    Integer delete(@Param("id") Integer id);
 
 }

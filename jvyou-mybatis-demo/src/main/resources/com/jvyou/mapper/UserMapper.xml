@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jvyou.mybatis.mapper.UserMapper">
+    <insert id="insert">
+        insert into t_user(name, age)
+        values (#{user.name}, #{user.age});
+    </insert>
+    <update id="update">
+        update t_user
+        set name = #{user.name},
+            age  = #{user.age}
+        where id = #{user.id};
+    </update>
+    <delete id="delete">
+        delete
+        from t_user
+        where id = #{id};
+    </delete>
     <select id="getAll" resultType="com.jvyou.mybatis.entity.User">
         select *
         from t_user
