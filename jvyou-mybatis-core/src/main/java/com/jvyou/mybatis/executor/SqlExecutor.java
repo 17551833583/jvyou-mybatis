@@ -14,5 +14,5 @@ public interface SqlExecutor {
 
     <T> List<T> query(MappedStatement ps, Object parameter);
 
-    int update(MappedStatement ps, Object parameter);
+    int update(MappedStatement ms, Object parameter);
 }

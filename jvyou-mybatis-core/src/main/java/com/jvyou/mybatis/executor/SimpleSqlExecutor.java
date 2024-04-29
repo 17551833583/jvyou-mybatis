@@ -1,6 +1,7 @@
 package com.jvyou.mybatis.executor;
 
 import com.jvyou.mybatis.constant.SQLKeyword;
+import com.jvyou.mybatis.exception.JvyouMybatisException;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.parser.GenericTokenParser;
 import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
@@ -45,18 +46,19 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
             // 获取参数名称
             List<String> params = tokenHandler.getParams();
 
-            Map<String, Object> paramMap = (Map<String, Object>) parameter;
+            Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
 
             // 填充参数
-            for (int i = 0; i < params.size(); i++) {
-                String param = params.get(i);
-                Object value = paramMap.get(param);
-                configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
+            if (paramMap != null && params.size() > 0) {
+                for (int i = 0; i < params.size(); i++) {
+                    String param = params.get(i);
+                    Object value = paramMap.get(param);
+                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
+                }
             }
             ps.execute();
             // 获取结果集
             ResultSet resultSet = ps.getResultSet();
-
 
             Field[] fields = returnType.getDeclaredFields();
 
@@ -77,15 +79,49 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
             resultSet.close();
             ps.close();
             connection.close();
-        } catch (Exception e) {
-
+        } catch (SQLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            throw new JvyouMybatisException("An error occurred in the execution of the query operation, and the nested exception was：" + e);
         }
         return result;
     }
 
     @Override
-    public int update(MappedStatement ps, Object parameter) {
-        return 0;
+    public int update(MappedStatement ms, Object parameter) {
+        // 获取原始的 SQLm
+        String originalSql = ms.getSql();
+
+        // 解析 SQL
+        ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
+        GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
+        String parsedSql = genericTokenParser.parse(originalSql);
+        // 修改的行数
+        int row = 0;
+        try {
+            // 获取数据库链接
+            Connection connection = getConnection();
+            PreparedStatement ps = connection.prepareStatement(parsedSql);
+            // 获取参数名称
+            List<String> params = tokenHandler.getParams();
+
+            Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
+
+            // 填充参数
+            if (paramMap != null && params.size() > 0) {
+                for (int i = 0; i < params.size(); i++) {
+                    String param = params.get(i);
+                    Object value = paramMap.get(param);
+                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
+                }
+            }
+            row = ps.executeUpdate();
+
+            // 5.关闭数据库链接
+            ps.close();
+            connection.close();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new JvyouMybatisException("An error occurred in the execution of the query operation, and the nested exception was：" + e);
+        }
+        return row;
     }
 
     private Connection getConnection() throws ClassNotFoundException, SQLException {

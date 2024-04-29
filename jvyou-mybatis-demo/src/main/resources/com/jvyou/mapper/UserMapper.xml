@@ -5,11 +5,21 @@
         insert into t_user(name, age)
         values (#{user.name}, #{user.age});
     </insert>
+    <insert id="insertByUser">
+        insert into t_user(name, age)
+        values (#{name}, #{age});
+    </insert>
     <update id="update">
         update t_user
         set name = #{user.name},
             age  = #{user.age}
         where id = #{user.id};
+    </update>
+    <update id="updateByUser">
+        update t_user
+        set name = #{name},
+            age  = #{age}
+        where id = #{id};
     </update>
     <delete id="delete">
         delete

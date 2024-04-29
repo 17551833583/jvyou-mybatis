@@ -20,6 +20,8 @@ public interface SqlSession {
 
     <T> List<T> selectList(String statementId, Object parameter);
 
+    <E> List<E> selectList(String statementId);
+
     <T> T getMapper(Class<T> mapperClass);
 
     void close();

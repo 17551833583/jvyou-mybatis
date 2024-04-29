@@ -16,6 +16,9 @@ public interface UserMapper {
     @Select("select * from t_user where id=#{id} and name=#{name}")
     List<User> getAll(@Param("name") String name, @Param("id") Integer id);
 
+    @Select("select * from t_user")
+    List<User> getAll();
+
     @Select("select * from t_user where id=#{id} and name=#{name}")
     User getOne(@Param("name") String name, @Param("id") Integer id);
 
@@ -23,10 +26,16 @@ public interface UserMapper {
     Integer count();
 
     @Insert("insert into t_user(name,age) values(#{user.name},#{user.age})")
-    Integer insert(@Param("user") User user);
+    Integer insertByUser(@Param("user") User user);
+
+    @Insert("insert into t_user(name,age) values(#{name},#{age})")
+    Integer insert(@Param("name") String name, @Param("age") Integer age);
 
     @Update("update t_user set name=#{user.name},age=#{user.age} where id=#{user.id}")
-    Integer update(@Param("user") User user);
+    Integer updateByUser(@Param("user") User user);
+
+    @Update("update t_user set name=#{name},age=#{age} where id=#{id}")
+    Integer update(@Param("id") Integer id, @Param("name") String name, @Param("age") Integer age);
 
     @Delete("delete from t_user where id=#{id}")
     Integer delete(@Param("id") Integer id);

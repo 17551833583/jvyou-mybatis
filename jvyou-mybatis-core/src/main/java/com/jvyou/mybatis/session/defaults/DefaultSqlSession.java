@@ -61,6 +61,11 @@ public class DefaultSqlSession implements SqlSession {
     }
 
     @Override
+    public <E> List<E> selectList(String statementId) {
+        return selectList(statementId, null);
+    }
+
+    @Override
     public <T> T getMapper(Class<T> mapperClass) {
         return new MapperProxyFactory().getProxy(mapperClass, this);
     }

@@ -53,11 +53,11 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
 
         switch (sqlCommandType) {
             case INSERT:
-                return sqlSession.insert(ms.getId(), parameters);
+                return sqlSession.insert(ms.getId(), paramMap);
             case UPDATE:
-                return sqlSession.update(ms.getId(), parameters);
+                return sqlSession.update(ms.getId(), paramMap);
             case DELETE:
-                return sqlSession.delete(ms.getId(), parameters);
+                return sqlSession.delete(ms.getId(), paramMap);
             case SELECT:
                 if (ms.isSelectMany()) {
                     return sqlSession.selectList(ms.getId(), paramMap);
@@ -66,8 +66,6 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
                 }
         }
         // 如果检查不到 SQL 命令类型，则抛出异常
-        throw new UnknownSqlCommandException("未知 SQL 命令类型，或者未检测到 Select、Insert、Update、Delete 注解");
+        throw new UnknownSqlCommandException("Unknown SQL command type，Or not detected Select、Insert、Update、Delete annotation");
     }
-
-
 }

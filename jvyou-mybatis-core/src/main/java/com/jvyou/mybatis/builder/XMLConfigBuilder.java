@@ -35,46 +35,44 @@ public class XMLConfigBuilder {
         for (Class<?> aClass : classes) {
             Method[] methods = aClass.getMethods();
             for (Method method : methods) {
+                String originalSql = "";
+                SqlCommandType sqlCommandType = SqlCommandType.SELECT;
                 if (method.isAnnotationPresent(Select.class)) {
-                    String originalSql = "";
-                    SqlCommandType sqlCommandType = SqlCommandType.SELECT;
-                    if (method.isAnnotationPresent(Select.class)) {
-                        originalSql = method.getAnnotation(Select.class).value();
-                        sqlCommandType = SqlCommandType.SELECT;
-                    } else if (method.isAnnotationPresent(Update.class)) {
-                        originalSql = method.getAnnotation(Update.class).value();
-                        sqlCommandType = SqlCommandType.UPDATE;
-                    } else if (method.isAnnotationPresent(Insert.class)) {
-                        originalSql = method.getAnnotation(Insert.class).value();
-                        sqlCommandType = SqlCommandType.INSERT;
-                    } else if (method.isAnnotationPresent(Delete.class)) {
-                        originalSql = method.getAnnotation(Delete.class).value();
-                        sqlCommandType = SqlCommandType.DELETE;
-                    }
-                    // 是否返回多行
-                    boolean isSelectMany = false;
-                    // 获取 Mapper 方法的返回值类型
-                    Class<?> returnType = null;
-                    Type genericReturnType = method.getGenericReturnType();
-                    if (genericReturnType instanceof Class) {
-                        returnType = (Class<?>) genericReturnType;
-                    } else if (genericReturnType instanceof ParameterizedType) {
-                        isSelectMany = true;
-                        returnType = ((ParameterizedType) genericReturnType).getActualTypeArguments().length > 0
-                                ? (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0]
-                                : (Class<?>) ((ParameterizedType) genericReturnType).getRawType();
-                    }
-
-
-                    MappedStatement mappedStatement = MappedStatement.builder()
-                            .id(aClass.getName() + "." + method.getName())
-                            .sql(originalSql)
-                            .resultType(returnType)
-                            .isSelectMany(isSelectMany)
-                            .sqlCommandType(sqlCommandType)
-                            .build();
-                    configuration.addMappedStatement(mappedStatement);
+                    originalSql = method.getAnnotation(Select.class).value();
+                    sqlCommandType = SqlCommandType.SELECT;
+                } else if (method.isAnnotationPresent(Update.class)) {
+                    originalSql = method.getAnnotation(Update.class).value();
+                    sqlCommandType = SqlCommandType.UPDATE;
+                } else if (method.isAnnotationPresent(Insert.class)) {
+                    originalSql = method.getAnnotation(Insert.class).value();
+                    sqlCommandType = SqlCommandType.INSERT;
+                } else if (method.isAnnotationPresent(Delete.class)) {
+                    originalSql = method.getAnnotation(Delete.class).value();
+                    sqlCommandType = SqlCommandType.DELETE;
                 }
+                // 是否返回多行
+                boolean isSelectMany = false;
+                // 获取 Mapper 方法的返回值类型
+                Class<?> returnType = null;
+                Type genericReturnType = method.getGenericReturnType();
+                if (genericReturnType instanceof Class) {
+                    returnType = (Class<?>) genericReturnType;
+                } else if (genericReturnType instanceof ParameterizedType) {
+                    isSelectMany = true;
+                    returnType = ((ParameterizedType) genericReturnType).getActualTypeArguments().length > 0
+                            ? (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0]
+                            : (Class<?>) ((ParameterizedType) genericReturnType).getRawType();
+                }
+
+
+                MappedStatement mappedStatement = MappedStatement.builder()
+                        .id(aClass.getName() + "." + method.getName())
+                        .sql(originalSql)
+                        .resultType(returnType)
+                        .isSelectMany(isSelectMany)
+                        .sqlCommandType(sqlCommandType)
+                        .build();
+                configuration.addMappedStatement(mappedStatement);
             }
         }
 
