@@ -1,11 +1,8 @@
 package com.jvyou.mybatis.executor;
 
-import cn.hutool.core.util.ReflectUtil;
-import com.jvyou.mybatis.constant.SQLKeyword;
 import com.jvyou.mybatis.exception.JvyouMybatisException;
+import com.jvyou.mybatis.mapping.BoundSql;
 import com.jvyou.mybatis.mapping.MappedStatement;
-import com.jvyou.mybatis.parser.GenericTokenParser;
-import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
 import com.jvyou.mybatis.session.Configuration;
 
 import java.lang.reflect.Field;
@@ -20,7 +17,7 @@ import java.util.Map;
  * @Date 2024/4/28 17:43
  * @Description 简单 SQL 执行器
  */
-public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
+public class SimpleSqlExecutor implements SqlExecutor {
 
     private Configuration configuration;
 
@@ -30,57 +27,29 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
 
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
-        // 获取原始的 SQL
-        String originalSql = ms.getSql();
+        BoundSql boundSql = ms.getBoundSql();
         // 获取 Mapper 方法的返回值类型
         Class<?> returnType = ms.getResultType();
-        // 解析 SQL
-        ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
-        GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
-        String parsedSql = genericTokenParser.parse(originalSql);
-
-        List result = new ArrayList();
+        List result;
         try {
             // 获取数据库链接
             Connection connection = getConnection();
-            PreparedStatement ps = connection.prepareStatement(parsedSql);
-            // 获取参数名称
-            List<String> params = tokenHandler.getParams();
-
+            PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
             Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
-
             // 填充参数
-            if (paramMap != null && params.size() > 0) {
-                for (int i = 0; i < params.size(); i++) {
-                    String param = params.get(i);
-                    Object value = paramMap.get(param);
-                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
-                }
-            }
+            populateParameters(boundSql.getParamNames(), ps, paramMap);
+            // 执行查询
             ps.execute();
             // 获取结果集
             ResultSet resultSet = ps.getResultSet();
-
-            Field[] fields = returnType.getDeclaredFields();
-
-            while (resultSet.next()) {
-                Object obj = returnType.newInstance();
-                for (Field field : fields) {
-                    // 获取字段名称
-                    String fieldName = field.getName();
-                    // 获取字段值
-                    Object fieldValue = configuration.getParamTypeHandler(field.getType()).getResult(resultSet, fieldName);
-                    // 设置字段值
-                    field.setAccessible(true);
-                    field.set(obj, fieldValue);
-                }
-                result.add(obj);
-            }
-            // 5.关闭数据库链接
+            // 处理结果集
+            result = handleResult(resultSet, returnType);
+            // 关闭数据库链接
             resultSet.close();
             ps.close();
             connection.close();
-        } catch (SQLException | ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+
+        } catch (SQLException e) {
             throw new JvyouMybatisException("An error occurred in the execution of the query operation, and the nested exception was：" + e);
         }
         return result;
@@ -88,61 +57,80 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
 
     @Override
     public int update(MappedStatement ms, Object parameter) {
-        // 获取原始的 SQLm
-        String originalSql = ms.getSql();
-
-        // 解析 SQL
-        ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
-        GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
-        String parsedSql = genericTokenParser.parse(originalSql);
-        // 获取参数名称列表，这个是根据原始的 SQL 语句解析出来的
-        List<String> params = tokenHandler.getParams();
+        BoundSql boundSql = ms.getBoundSql();
         // 修改的行数
-        int row = 0;
+        int row;
         try {
             // 获取数据库链接
             Connection connection = getConnection();
-            PreparedStatement ps = connection.prepareStatement(parsedSql);
+            PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
             // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
             Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
-
             // 填充参数
-            if (paramMap != null && params.size() > 0) {
-                for (int i = 0; i < params.size(); i++) {
-                    String paramName = params.get(i);
-                    Object value;
-                    // 如果由 “.” 号，说明是 Mapper 方法传递过来的对象
-                    if (paramName.contains(".")) {
-                        String[] paramNames = paramName.split("\\.");
-                        value = paramMap.get(paramNames[0]);
-                        for (int j = 1; j < paramNames.length; j++) {
-                            value = getFieldValue(paramNames[j], value.getClass(), value);
-                        }
-                    } else {
-                        value = paramMap.get(paramName);
-                    }
-                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
-                }
-            }
+            populateParameters(boundSql.getParamNames(), ps, paramMap);
             row = ps.executeUpdate();
-
             // 5.关闭数据库链接
             ps.close();
             connection.close();
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new JvyouMybatisException("An error occurred in the execution of the query operation, and the nested exception was：" + e);
+        } catch (SQLException e) {
+            throw new JvyouMybatisException("An error occurred in the execution of the update operation, and the nested exception was：" + e);
         }
         return row;
     }
 
-    private Connection getConnection() throws ClassNotFoundException, SQLException {
+    /**
+     * 向 PreparedStatement 填充参数
+     *
+     * @param params   参数名称列表，解析 SQL 语句时候从占位符中提取
+     * @param ps       PreparedStatement 对象
+     * @param paramMap 真实参数，key 为 Param 注解的 value 值
+     * @throws SQLException 异常
+     */
+    private void populateParameters(List<String> params, PreparedStatement ps, Map<String, Object> paramMap) {
+        if (paramMap != null && params.size() > 0) {
+            for (int i = 0; i < params.size(); i++) {
+                String paramName = params.get(i);
+                Object value;
+                // 如果由 “.” 号，说明是 Mapper 方法传递过来的对象
+                if (paramName.contains(".")) {
+                    String[] paramNames = paramName.split("\\.");
+                    value = paramMap.get(paramNames[0]);
+                    for (int j = 1; j < paramNames.length; j++) {
+                        value = getFieldValue(paramNames[j], value.getClass(), value);
+                    }
+                } else {
+                    value = paramMap.get(paramName);
+                }
+                try {
+                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
+                } catch (SQLException e) {
+                    throw new JvyouMybatisException("Populating the value passed by the method to PreparedStatement error, nested exception is:\n" + e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取数据库链接
+     *
+     * @return 数据库链接
+     */
+    private Connection getConnection() {
         // 加载数据库驱动
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new JvyouMybatisException("Loading the database driver failed with nested exceptions:\n" + e);
+        }
         // 获取数据库链接
         String url = "jdbc:mysql://127.0.0.1:3306/jvyou-mybatis?useUnicode=true&characterEncoding=UTF8&useSSL=false";
         String username = "root";
         String password = "123456";
-        return DriverManager.getConnection(url, username, password);
+        try {
+            return DriverManager.getConnection(url, username, password);
+        } catch (SQLException e) {
+            throw new JvyouMybatisException("The get database connection failed, and the nested exception was:\n" + e);
+        }
     }
 
     private Object getFieldValue(String fieldName, Class<?> clazz, Object obj) {
@@ -157,6 +145,37 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 处理结果集
+     *
+     * @param resultSet  结果集对象
+     * @param returnType 返回值类型
+     * @return 将结果集里面的内容映射为指定类型的集合
+     */
+    private List handleResult(ResultSet resultSet, Class<?> returnType) {
+        List result = new ArrayList();
+        Field[] fields = returnType.getDeclaredFields();
+
+        try {
+            while (resultSet.next()) {
+                Object obj = returnType.newInstance();
+                for (Field field : fields) {
+                    // 获取字段名称
+                    String fieldName = field.getName();
+                    // 获取字段值
+                    Object fieldValue = configuration.getParamTypeHandler(field.getType()).getResult(resultSet, fieldName);
+                    // 设置字段值
+                    field.setAccessible(true);
+                    field.set(obj, fieldValue);
+                }
+                result.add(obj);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException e) {
+            throw new JvyouMybatisException("Mapping a ResultSet to a query result failed with nested exceptions:\n" + e);
+        }
+        return result;
     }
 
 }

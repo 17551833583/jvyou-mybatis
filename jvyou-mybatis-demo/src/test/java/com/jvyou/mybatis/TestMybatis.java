@@ -36,7 +36,7 @@ public class TestMybatis {
 
         UserMapper mapper=sqlSession.getMapper(UserMapper.class);
         //执行Sql语句
-        List<User> users=mapper.getAll("jvyou", 1);
+        List<User> users=mapper.getList("jvyou", 1);
         //打印结果
         for (User user : users) {
             System.out.println(user);

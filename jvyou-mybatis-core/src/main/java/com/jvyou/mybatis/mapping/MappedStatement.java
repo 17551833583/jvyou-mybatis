@@ -1,9 +1,14 @@
 package com.jvyou.mybatis.mapping;
 
+import com.jvyou.mybatis.constant.SQLKeyword;
+import com.jvyou.mybatis.parser.GenericTokenParser;
+import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 /**
  * @author 橘柚
@@ -15,7 +20,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MappedStatement {
+public class MappedStatement implements SQLKeyword {
 
     /**
      * 唯一标识 eg: com.jvyou.mybatis.mapper.UserMapper.getAll
@@ -38,5 +43,20 @@ public class MappedStatement {
      * 是否是查询多条记录
      */
     private boolean isSelectMany;
+
+    /**
+     * 获取 BoundSql
+     *
+     * @return 携带解析后的SQL和参数名称列表的 BoundSql 对象
+     */
+    public BoundSql getBoundSql() {
+        // 解析 SQL
+        ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
+        GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
+        String parsedSql = genericTokenParser.parse(sql);
+        // 获取参数名称列表，这个是根据原始的 SQL 语句解析出来的
+        List<String> params = tokenHandler.getParams();
+        return new BoundSql(parsedSql, params);
+    }
 
 }

@@ -15,7 +15,7 @@ import java.util.List;
 public interface UserMapper {
 
     @Select("select * from t_user where id=#{id} and name=#{name}")
-    List<User> getAll(@Param("name") String name, @Param("id") Integer id);
+    List<User> getList(@Param("name") String name, @Param("id") Integer id);
 
     @Select("select * from t_user")
     List<User> getAll();

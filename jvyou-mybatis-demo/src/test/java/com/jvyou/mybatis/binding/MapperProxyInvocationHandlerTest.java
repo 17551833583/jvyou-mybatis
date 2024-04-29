@@ -38,7 +38,7 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void getAll2() {
-        List<User> users = userMapper.getAll("jvyou", 1);
+        List<User> users = userMapper.getList("jvyou", 1);
         System.out.println(JSONUtil.toJsonStr(users));
     }
 
@@ -84,20 +84,20 @@ public class MapperProxyInvocationHandlerTest {
         User user = new User();
         user.setName(RandomUtil.randomString(5));
         user.setAge(RandomUtil.randomInt(0, 100));
-        user.setId(26005);
+        user.setId(26007);
         Integer row = userMapper.updateByUserVo(new UserVo(user));
         System.out.println(row);
     }
 
     @Test
     void update() {
-        Integer row = userMapper.update(26005, "yya", 18);
+        Integer row = userMapper.update(26007, "yya", 18);
         System.out.println(row);
     }
 
     @Test
     void delete() {
-        boolean row = userMapper.delete(26006);
+        boolean row = userMapper.delete(26007);
         System.out.println(row);
     }
 }

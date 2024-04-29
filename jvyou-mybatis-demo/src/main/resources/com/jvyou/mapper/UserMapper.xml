@@ -43,4 +43,5 @@
         select count(*)
         from t_user;
     </select>
+    <select id="getList" resultType="com.jvyou.mybatis.entity.User"></select>
 </mapper>
