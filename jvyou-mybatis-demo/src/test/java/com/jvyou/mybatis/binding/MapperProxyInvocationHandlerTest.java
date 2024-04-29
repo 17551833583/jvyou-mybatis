@@ -1,7 +1,9 @@
 package com.jvyou.mybatis.binding;
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.jvyou.mybatis.entity.User;
+import com.jvyou.mybatis.entity.UserVo;
 import com.jvyou.mybatis.mapper.UserMapper;
 import com.jvyou.mybatis.session.SqlSession;
 import com.jvyou.mybatis.session.SqlSessionFactory;
@@ -55,25 +57,35 @@ public class MapperProxyInvocationHandlerTest {
     @Test
     void insertByUser() {
         User user = new User();
-        user.setName("yy");
-        user.setAge(18);
+        user.setName(RandomUtil.randomString(5));
+        user.setAge(RandomUtil.randomInt(0, 100));
         Integer row = userMapper.insertByUser(user);
         System.out.println(row);
     }
 
     @Test
     void insert() {
-        Integer row = userMapper.insert("yy", 20);
+        Integer row = userMapper.insert(RandomUtil.randomString(5), RandomUtil.randomInt(0, 100));
         System.out.println(row);
     }
 
     @Test
     void updateByUser() {
         User user = new User();
-        user.setName("yy");
-        user.setAge(18);
-        user.setId(1);
+        user.setName(RandomUtil.randomString(5));
+        user.setAge(RandomUtil.randomInt(0, 100));
+        user.setId(26005);
         Integer row = userMapper.updateByUser(user);
+        System.out.println(row);
+    }
+
+    @Test
+    void updateByUserVo() {
+        User user = new User();
+        user.setName(RandomUtil.randomString(5));
+        user.setAge(RandomUtil.randomInt(0, 100));
+        user.setId(26005);
+        Integer row = userMapper.updateByUserVo(new UserVo(user));
         System.out.println(row);
     }
 

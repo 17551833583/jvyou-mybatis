@@ -36,7 +36,7 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // 从参数名称中获取参数值
         Map<String, Object> paramMap = new HashMap<>();
-
+        // key 值为 Param 注解的 value
         Parameter[] parameters = method.getParameters();
         for (int i = 0; i < parameters.length; i++) {
             Parameter parameter = parameters[i];

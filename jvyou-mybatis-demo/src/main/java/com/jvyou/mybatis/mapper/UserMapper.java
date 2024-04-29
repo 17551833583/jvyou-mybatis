@@ -2,6 +2,7 @@ package com.jvyou.mybatis.mapper;
 
 import com.jvyou.mybatis.annotations.*;
 import com.jvyou.mybatis.entity.User;
+import com.jvyou.mybatis.entity.UserVo;
 
 import java.util.List;
 
@@ -33,6 +34,9 @@ public interface UserMapper {
 
     @Update("update t_user set name=#{user.name},age=#{user.age} where id=#{user.id}")
     Integer updateByUser(@Param("user") User user);
+
+    @Update("update t_user set name=#{userVo.user.name},age=#{userVo.user.age} where id=#{userVo.user.id}")
+    Integer updateByUserVo(@Param("userVo") UserVo userVo);
 
     @Update("update t_user set name=#{name},age=#{age} where id=#{id}")
     Integer update(@Param("id") Integer id, @Param("name") String name, @Param("age") Integer age);

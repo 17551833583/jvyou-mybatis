@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.executor;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.jvyou.mybatis.constant.SQLKeyword;
 import com.jvyou.mybatis.exception.JvyouMybatisException;
 import com.jvyou.mybatis.mapping.MappedStatement;
@@ -94,22 +95,32 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
         ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
         GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);
         String parsedSql = genericTokenParser.parse(originalSql);
+        // 获取参数名称列表，这个是根据原始的 SQL 语句解析出来的
+        List<String> params = tokenHandler.getParams();
         // 修改的行数
         int row = 0;
         try {
             // 获取数据库链接
             Connection connection = getConnection();
             PreparedStatement ps = connection.prepareStatement(parsedSql);
-            // 获取参数名称
-            List<String> params = tokenHandler.getParams();
-
+            // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
             Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
 
             // 填充参数
             if (paramMap != null && params.size() > 0) {
                 for (int i = 0; i < params.size(); i++) {
-                    String param = params.get(i);
-                    Object value = paramMap.get(param);
+                    String paramName = params.get(i);
+                    Object value;
+                    // 如果由 “.” 号，说明是 Mapper 方法传递过来的对象
+                    if (paramName.contains(".")) {
+                        String[] paramNames = paramName.split("\\.");
+                        value = paramMap.get(paramNames[0]);
+                        for (int j = 1; j < paramNames.length; j++) {
+                            value = getFieldValue(paramNames[j], value.getClass(), value);
+                        }
+                    } else {
+                        value = paramMap.get(paramName);
+                    }
                     configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
                 }
             }
@@ -132,6 +143,20 @@ public class SimpleSqlExecutor implements SqlExecutor, SQLKeyword {
         String username = "root";
         String password = "123456";
         return DriverManager.getConnection(url, username, password);
+    }
+
+    private Object getFieldValue(String fieldName, Class<?> clazz, Object obj) {
+        if (obj == null || obj instanceof Class) {
+            return null;
+        }
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
