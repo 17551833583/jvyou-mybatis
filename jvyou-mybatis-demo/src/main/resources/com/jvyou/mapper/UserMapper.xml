@@ -21,6 +21,7 @@
             age  = #{age}
         where id = #{id};
     </update>
+    <update id="updateByUserVo"></update>
     <delete id="delete">
         delete
         from t_user

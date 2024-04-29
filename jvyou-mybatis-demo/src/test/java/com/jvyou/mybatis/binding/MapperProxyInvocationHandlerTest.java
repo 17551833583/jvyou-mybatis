@@ -65,7 +65,7 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void insert() {
-        Integer row = userMapper.insert(RandomUtil.randomString(5), RandomUtil.randomInt(0, 100));
+        int row = userMapper.insert(RandomUtil.randomString(5), RandomUtil.randomInt(0, 100));
         System.out.println(row);
     }
 
@@ -97,7 +97,7 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void delete() {
-        Integer row = userMapper.delete(1);
+        boolean row = userMapper.delete(26006);
         System.out.println(row);
     }
 }

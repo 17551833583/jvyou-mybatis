@@ -50,14 +50,15 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
         Configuration configuration = sqlSession.getConfiguration();
         MappedStatement ms = configuration.getMappedStatement(mapperClass.getName() + "." + method.getName());
         SqlCommandType sqlCommandType = ms.getSqlCommandType();
+        Class<?> resultType = ms.getResultType();
 
         switch (sqlCommandType) {
             case INSERT:
-                return sqlSession.insert(ms.getId(), paramMap);
+                return convertType(sqlSession.insert(ms.getId(), paramMap), resultType);
             case UPDATE:
-                return sqlSession.update(ms.getId(), paramMap);
+                return convertType(sqlSession.update(ms.getId(), paramMap), resultType);
             case DELETE:
-                return sqlSession.delete(ms.getId(), paramMap);
+                return convertType(sqlSession.delete(ms.getId(), paramMap), resultType);
             case SELECT:
                 if (ms.isSelectMany()) {
                     return sqlSession.selectList(ms.getId(), paramMap);
@@ -67,5 +68,28 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
         }
         // 如果检查不到 SQL 命令类型，则抛出异常
         throw new UnknownSqlCommandException("Unknown SQL command type，Or not detected Select、Insert、Update、Delete annotation");
+    }
+
+
+    private Object convertType(Object value, Class<?> type) {
+        if (value == null || type == void.class) {
+            return null;
+        }
+        if (type == Integer.class || type == int.class) {
+            return value;
+        }
+        if (type == Long.class || type == long.class) {
+            return Long.parseLong(value.toString());
+        }
+        if (type == Short.class || type == short.class) {
+            return Short.parseShort(value.toString());
+        }
+        if (type == Float.class || type == float.class) {
+            return Float.parseFloat(value.toString());
+        }
+        if (type == Boolean.class || type == boolean.class) {
+            return Integer.parseInt(value.toString()) >= 1;
+        }
+        return value;
     }
 }

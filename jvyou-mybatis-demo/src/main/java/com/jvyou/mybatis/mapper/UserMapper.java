@@ -30,7 +30,7 @@ public interface UserMapper {
     Integer insertByUser(@Param("user") User user);
 
     @Insert("insert into t_user(name,age) values(#{name},#{age})")
-    Integer insert(@Param("name") String name, @Param("age") Integer age);
+    int insert(@Param("name") String name, @Param("age") Integer age);
 
     @Update("update t_user set name=#{user.name},age=#{user.age} where id=#{user.id}")
     Integer updateByUser(@Param("user") User user);
@@ -42,6 +42,6 @@ public interface UserMapper {
     Integer update(@Param("id") Integer id, @Param("name") String name, @Param("age") Integer age);
 
     @Delete("delete from t_user where id=#{id}")
-    Integer delete(@Param("id") Integer id);
+    boolean delete(@Param("id") Integer id);
 
 }
