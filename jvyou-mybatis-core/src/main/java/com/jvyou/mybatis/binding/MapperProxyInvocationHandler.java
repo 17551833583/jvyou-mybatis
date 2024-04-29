@@ -2,6 +2,10 @@ package com.jvyou.mybatis.binding;
 
 import com.jvyou.mybatis.annotations.Param;
 import com.jvyou.mybatis.constant.SQLKeyword;
+import com.jvyou.mybatis.exception.UnknownSqlCommandException;
+import com.jvyou.mybatis.mapping.MappedStatement;
+import com.jvyou.mybatis.mapping.SqlCommandType;
+import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.session.SqlSession;
 
 import java.lang.reflect.InvocationHandler;
@@ -43,8 +47,26 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
             }
         }
 
-        return sqlSession.selectList(mapperClass.getName() + "." + method.getName(), paramMap);
+        Configuration configuration = sqlSession.getConfiguration();
+        MappedStatement ms = configuration.getMappedStatement(mapperClass.getName() + "." + method.getName());
+        SqlCommandType sqlCommandType = ms.getSqlCommandType();
 
+        switch (sqlCommandType) {
+            case INSERT:
+                return sqlSession.insert(ms.getId(), parameters);
+            case UPDATE:
+                return sqlSession.update(ms.getId(), parameters);
+            case DELETE:
+                return sqlSession.delete(ms.getId(), parameters);
+            case SELECT:
+                if (ms.isSelectMany()) {
+                    return sqlSession.selectList(ms.getId(), paramMap);
+                } else {
+                    return sqlSession.selectOne(ms.getId(), paramMap);
+                }
+        }
+        // 如果检查不到 SQL 命令类型，则抛出异常
+        throw new UnknownSqlCommandException("未知 SQL 命令类型，或者未检测到 Select、Insert、Update、Delete 注解");
     }
 
 

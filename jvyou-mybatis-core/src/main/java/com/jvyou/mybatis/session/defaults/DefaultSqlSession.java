@@ -69,4 +69,9 @@ public class DefaultSqlSession implements SqlSession {
     public void close() {
 
     }
+
+    @Override
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 }

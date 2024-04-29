@@ -39,12 +39,14 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void test2() {
-        userMapper.getOne("jvyou", 1);
+        User jvyou = userMapper.getOne("jvyou", 1);
+        System.out.println(JSONUtil.toJsonStr(jvyou));
     }
 
     @Test
     void test3() {
-        userMapper.count();
+        Integer count = userMapper.count();
+        System.out.println(count);
     }
 
 }

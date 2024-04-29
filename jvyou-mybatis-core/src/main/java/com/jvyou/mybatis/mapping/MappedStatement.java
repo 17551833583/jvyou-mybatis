@@ -17,13 +17,26 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class MappedStatement {
 
-    // 唯一标识 eg: com.jvyou.mybatis.mapper.UserMapper.getAll
+    /**
+     * 唯一标识 eg: com.jvyou.mybatis.mapper.UserMapper.getAll
+     * 由类名和方法名组成
+     */
     private String id;
-    // sql
+    /**
+     * 原始的 SQL语句
+     */
     private String sql;
-    // 返回类型
+    /**
+     * 返回类型
+     */
     private Class<?> resultType;
-    // sql 类型
+    /**
+     * SQL 命令类型
+     */
     private SqlCommandType sqlCommandType;
+    /**
+     * 是否是查询多条记录
+     */
+    private boolean isSelectMany;
 
 }

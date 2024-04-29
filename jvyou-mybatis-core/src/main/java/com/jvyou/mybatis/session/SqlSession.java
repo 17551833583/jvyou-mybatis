@@ -24,4 +24,6 @@ public interface SqlSession {
 
     void close();
 
+    Configuration getConfiguration();
+
 }

@@ -8,9 +8,10 @@ import com.jvyou.mybatis.annotations.Update;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.mapping.SqlCommandType;
 import com.jvyou.mybatis.session.Configuration;
-import com.jvyou.mybatis.utils.TypeUtils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Set;
 
 /**
@@ -50,13 +51,26 @@ public class XMLConfigBuilder {
                         originalSql = method.getAnnotation(Delete.class).value();
                         sqlCommandType = SqlCommandType.DELETE;
                     }
-
+                    // 是否返回多行
+                    boolean isSelectMany = false;
                     // 获取 Mapper 方法的返回值类型
-                    Class<?> returnType = TypeUtils.getMethodReturnType(method);
+                    Class<?> returnType = null;
+                    Type genericReturnType = method.getGenericReturnType();
+                    if (genericReturnType instanceof Class) {
+                        returnType = (Class<?>) genericReturnType;
+                    } else if (genericReturnType instanceof ParameterizedType) {
+                        isSelectMany = true;
+                        returnType = ((ParameterizedType) genericReturnType).getActualTypeArguments().length > 0
+                                ? (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0]
+                                : (Class<?>) ((ParameterizedType) genericReturnType).getRawType();
+                    }
+
+
                     MappedStatement mappedStatement = MappedStatement.builder()
                             .id(aClass.getName() + "." + method.getName())
                             .sql(originalSql)
                             .resultType(returnType)
+                            .isSelectMany(isSelectMany)
                             .sqlCommandType(sqlCommandType)
                             .build();
                     configuration.addMappedStatement(mappedStatement);
