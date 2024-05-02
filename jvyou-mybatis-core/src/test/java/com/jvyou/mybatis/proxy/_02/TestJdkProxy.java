@@ -14,7 +14,7 @@ public class TestJdkProxy {
 
     @Test
     void testJdkProxy() {
-        JdkProxy<Marry> marryJdkProxy = new JdkProxy<Marry>(new Spouse());
+        JdkProxy<Marry> marryJdkProxy = new JdkProxy(new Spouse());
         Marry proxy = marryJdkProxy.getProxy();
         proxy.marry();
     }

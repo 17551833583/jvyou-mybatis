@@ -27,19 +27,15 @@ public class SimpleSqlExecutor implements SqlExecutor {
 
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
-        BoundSql boundSql = ms.getBoundSql();
         // 获取 Mapper 方法的返回值类型
         Class<?> returnType = ms.getResultType();
+        // 获取数据库链接
+        Connection connection = getConnection();
+        BoundSql boundSql = ms.getBoundSql();
+
         List result;
         try {
-            // 获取数据库链接
-            Connection connection = getConnection();
-            PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
-            Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
-            // 填充参数
-            populateParameters(boundSql.getParamNames(), ps, paramMap);
-            // 执行查询
-            ps.execute();
+            PreparedStatement ps = execute(connection, ms, parameter);
             // 获取结果集
             ResultSet resultSet = ps.getResultSet();
             // 处理结果集
@@ -57,25 +53,31 @@ public class SimpleSqlExecutor implements SqlExecutor {
 
     @Override
     public int update(MappedStatement ms, Object parameter) {
-        BoundSql boundSql = ms.getBoundSql();
+        // 获取数据库链接
+        Connection connection = getConnection();
         // 修改的行数
         int row;
         try {
-            // 获取数据库链接
-            Connection connection = getConnection();
-            PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
-            // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
-            Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
-            // 填充参数
-            populateParameters(boundSql.getParamNames(), ps, paramMap);
-            row = ps.executeUpdate();
-            // 5.关闭数据库链接
+            PreparedStatement ps = execute(connection, ms, parameter);
+            row = ps.getUpdateCount();
+            // 关闭数据库链接
             ps.close();
             connection.close();
         } catch (SQLException e) {
             throw new JvyouMybatisException("An error occurred in the execution of the update operation, and the nested exception was：" + e);
         }
         return row;
+    }
+
+    private PreparedStatement execute(Connection connection, MappedStatement ms, Object parameter) throws SQLException {
+        BoundSql boundSql = ms.getBoundSql();
+        PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
+        // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
+        Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
+        // 填充参数
+        populateParameters(boundSql.getParamNames(), ps, paramMap);
+        ps.execute();
+        return ps;
     }
 
     /**
@@ -152,7 +154,7 @@ public class SimpleSqlExecutor implements SqlExecutor {
      *
      * @param resultSet  结果集对象
      * @param returnType 返回值类型
-     * @return 将结果集里面的内容映射为指定类型的集合
+     * @return 将结果集里面的内容映射为指定类型的集合，默认根据字段的名称映射
      */
     private List handleResult(ResultSet resultSet, Class<?> returnType) {
         List result = new ArrayList();

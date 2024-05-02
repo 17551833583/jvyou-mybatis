@@ -37,7 +37,7 @@ public class MapperProxyInvocationHandlerTest {
     }
 
     @Test
-    void getAll2() {
+    void getList() {
         List<User> users = userMapper.getList("jvyou", 1);
         System.out.println(JSONUtil.toJsonStr(users));
     }
