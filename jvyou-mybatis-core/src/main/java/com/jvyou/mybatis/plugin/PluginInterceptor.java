@@ -14,4 +14,15 @@ public interface PluginInterceptor {
 
     void setProperties(Properties properties);
 
+    /**
+     * 插件包装
+     *
+     * @param target 被包装的对象
+     * @param <T>    被包装对象的类型
+     * @return 被包装后的代理对象
+     */
+    default <T> T plugin(T target) {
+        return Plugin.wrap(target, this);
+    }
+
 }

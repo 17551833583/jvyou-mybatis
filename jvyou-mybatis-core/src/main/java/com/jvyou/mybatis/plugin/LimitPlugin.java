@@ -23,4 +23,5 @@ public class LimitPlugin implements PluginInterceptor {
     public void setProperties(Properties properties) {
 
     }
+
 }
