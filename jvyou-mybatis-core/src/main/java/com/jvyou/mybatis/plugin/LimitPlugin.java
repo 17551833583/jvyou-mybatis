@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.plugin;
 
+import com.jvyou.mybatis.mapping.MappedStatement;
+
 import java.util.Properties;
 
 /**
@@ -14,9 +16,14 @@ public class LimitPlugin implements PluginInterceptor {
     @Override
     public Object intercept(Invocation invocation) {
         System.out.println("分页插件---开始分页");
+        if (invocation.getMethod().getName().equals("query")){
+            MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
+            String sql = ms.getSql();
+            ms.setSql(sql + " limit 0,2");
+        }
         Object result = invocation.proceed();
         System.out.println("分页插件---结束分页");
-        return result + "--分页插件处理结果";
+        return result ;
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.jvyou.mybatis.session;
 import com.jvyou.mybatis.executor.SimpleSqlExecutor;
 import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.MappedStatement;
+import com.jvyou.mybatis.plugin.InterceptorChain;
+import com.jvyou.mybatis.plugin.LimitPlugin;
+import com.jvyou.mybatis.plugin.SqlLogPlugin;
 import com.jvyou.mybatis.type.IntegerParamHandler;
 import com.jvyou.mybatis.type.ParamTypeHandler;
 import com.jvyou.mybatis.type.StringParamHandler;
@@ -20,15 +23,21 @@ import java.util.Map;
 @Data
 public class Configuration {
 
-    // 映射语句集合
+    // SQL 操作集合
     private Map<String, MappedStatement> mappedStatements = new HashMap<>();
     // 类型处理器映射
     @SuppressWarnings("rawtypes")
     private final Map<Class, ParamTypeHandler> paramTypeHandlerMap = new HashMap<>();
+    // 责任链
+    private InterceptorChain interceptorChain = new InterceptorChain();
 
     public Configuration() {
+        // 添加默认的类型处理器
         paramTypeHandlerMap.put(String.class, new StringParamHandler());
         paramTypeHandlerMap.put(Integer.class, new IntegerParamHandler());
+        // 添加默认的插件拦截器
+        interceptorChain.addInterceptor(new SqlLogPlugin());
+        interceptorChain.addInterceptor(new LimitPlugin());
     }
 
     /**
@@ -63,8 +72,13 @@ public class Configuration {
         return paramTypeHandlerMap.get(type);
     }
 
+    /**
+     * 创建一个新的SqlExecutor对象，并使用责任链模式包装它。
+     *
+     * @return 返回包装后的 SqlExecutor 对象。
+     */
     public SqlExecutor newSqlExecutor() {
-        return new SimpleSqlExecutor(this);
+        return interceptorChain.wrap(new SimpleSqlExecutor(this));
     }
 
 }

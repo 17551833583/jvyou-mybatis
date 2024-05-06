@@ -2,6 +2,7 @@ package com.jvyou.mybatis.plugin;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class Plugin implements InvocationHandler {
 
     public static <T> T wrap(T target, PluginInterceptor interceptor) {
         Class<?> clazz = target.getClass();
-        return (T) java.lang.reflect.Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), new Plugin(target, interceptor));
+        return (T) Proxy.newProxyInstance(clazz.getClassLoader(), clazz.getInterfaces(), new Plugin(target, interceptor));
     }
 
 }
