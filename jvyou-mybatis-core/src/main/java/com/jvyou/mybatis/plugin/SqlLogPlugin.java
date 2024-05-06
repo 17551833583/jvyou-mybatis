@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.plugin;
 
+import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.BoundSql;
 import com.jvyou.mybatis.mapping.MappedStatement;
 
@@ -11,6 +12,10 @@ import java.util.Properties;
  * @Date 2024/4/30 20:15
  * @Description SQL 日志打印插件
  */
+@Intercepts({
+        @Signature(type = SqlExecutor.class, method = "query"),
+        @Signature(type = SqlExecutor.class, method = "update")
+})
 public class SqlLogPlugin implements PluginInterceptor {
 
 
