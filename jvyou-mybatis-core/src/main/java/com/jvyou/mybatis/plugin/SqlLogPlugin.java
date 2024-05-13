@@ -13,8 +13,8 @@ import java.util.Properties;
  * @Description SQL 日志打印插件
  */
 @Intercepts({
-        @Signature(type = SqlExecutor.class, method = "query"),
-        @Signature(type = SqlExecutor.class, method = "update")
+        @Signature(type = SqlExecutor.class, method = "query", args = {MappedStatement.class, Object.class}),
+        @Signature(type = SqlExecutor.class, method = "update", args = {MappedStatement.class, Object.class})
 })
 public class SqlLogPlugin implements PluginInterceptor {
 

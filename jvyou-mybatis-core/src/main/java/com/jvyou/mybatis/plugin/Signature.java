@@ -8,5 +8,9 @@ package com.jvyou.mybatis.plugin;
  */
 public @interface Signature {
     Class<?> type();
+
     String method();
+
+    // TODO:优化默认参数
+    Class<?>[] args();
 }
