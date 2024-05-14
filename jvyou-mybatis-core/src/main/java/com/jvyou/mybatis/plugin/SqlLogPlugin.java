@@ -3,6 +3,7 @@ package com.jvyou.mybatis.plugin;
 import com.jvyou.mybatis.executor.resultset.ResultSetHandler;
 import com.jvyou.mybatis.mapping.BoundSql;
 import com.jvyou.mybatis.mapping.MappedStatement;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.PreparedStatement;
 import java.util.Properties;

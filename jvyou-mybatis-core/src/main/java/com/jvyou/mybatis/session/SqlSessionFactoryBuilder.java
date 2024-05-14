@@ -1,7 +1,7 @@
 package com.jvyou.mybatis.session;
 
 import com.jvyou.mybatis.builder.XMLConfigBuilder;
-import com.jvyou.mybatis.session.defaults.DefaultSqlSeiionFactory;
+import com.jvyou.mybatis.session.defaults.DefaultSqlSessionFactory;
 
 import java.io.InputStream;
 import java.util.Properties;
@@ -16,7 +16,7 @@ public class SqlSessionFactoryBuilder {
     public SqlSessionFactory build() {
         XMLConfigBuilder xmlConfigBuilder = new XMLConfigBuilder();
         Configuration configuration = xmlConfigBuilder.parse();
-        return new DefaultSqlSeiionFactory(configuration);
+        return new DefaultSqlSessionFactory(configuration);
     }
 
     public SqlSessionFactory build(InputStream inputStream) {

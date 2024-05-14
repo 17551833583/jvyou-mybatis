@@ -10,11 +10,11 @@ import com.jvyou.mybatis.session.SqlSessionFactory;
  * @Date 2024/4/28 21:36
  * @Description 默认 SqlSession 工厂实现类
  */
-public class DefaultSqlSeiionFactory implements SqlSessionFactory {
+public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
-    public DefaultSqlSeiionFactory(Configuration configuration) {
+    public DefaultSqlSessionFactory(Configuration configuration) {
         this.configuration = configuration;
     }
 

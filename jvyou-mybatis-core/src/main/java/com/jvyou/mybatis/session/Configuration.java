@@ -2,6 +2,8 @@ package com.jvyou.mybatis.session;
 
 import com.jvyou.mybatis.executor.SimpleSqlExecutor;
 import com.jvyou.mybatis.executor.SqlExecutor;
+import com.jvyou.mybatis.executor.parameter.DefaultParameterHandler;
+import com.jvyou.mybatis.executor.parameter.ParameterHandler;
 import com.jvyou.mybatis.executor.resultset.DefaultResultSetHandler;
 import com.jvyou.mybatis.executor.resultset.ResultSetHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
@@ -69,7 +71,8 @@ public class Configuration {
      * @param type 需要获取参数类型处理器的类型Class对象。
      * @return 返回与给定类型相匹配的参数类型处理器，如果找不到匹配的处理器则返回null。
      */
-    public ParamTypeHandler getParamTypeHandler(Class type) {
+    @SuppressWarnings("unchecked")
+    public <T> ParamTypeHandler<T> getParamTypeHandler(Class type) {
         // 从参数类型处理器映射中获取与给定类型相匹配的处理器
         return paramTypeHandlerMap.get(type);
     }
@@ -85,6 +88,10 @@ public class Configuration {
 
     public ResultSetHandler newResultSetHandler() {
         return interceptorChain.wrap(new DefaultResultSetHandler(this));
+    }
+
+    public ParameterHandler newParamTypeHandler() {
+        return interceptorChain.wrap(new DefaultParameterHandler(this));
     }
 
 }

@@ -52,6 +52,12 @@
                 <version>${slf4j.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.4.14</version>
+            </dependency>
+
             <!-- Hutool工具类 -->
             <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
             <dependency>

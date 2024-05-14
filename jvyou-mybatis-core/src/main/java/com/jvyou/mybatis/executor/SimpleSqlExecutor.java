@@ -5,8 +5,10 @@ import com.jvyou.mybatis.mapping.BoundSql;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
 
-import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +20,7 @@ import java.util.Map;
  */
 public class SimpleSqlExecutor implements SqlExecutor {
 
-    private Configuration configuration;
+    private final Configuration configuration;
 
     public SimpleSqlExecutor(Configuration configuration) {
         this.configuration = configuration;
@@ -71,40 +73,9 @@ public class SimpleSqlExecutor implements SqlExecutor {
         // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
         Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
         // 填充参数
-        populateParameters(boundSql.getParamNames(), ps, paramMap);
+        configuration.newParamTypeHandler().setParameters(boundSql.getParamNames(), ps, paramMap);
         ps.execute();
         return ps;
-    }
-
-    /**
-     * 向 PreparedStatement 填充参数
-     *
-     * @param params   参数名称列表，解析 SQL 语句时候从占位符中提取
-     * @param ps       PreparedStatement 对象
-     * @param paramMap 真实参数，key 为 Param 注解的 value 值
-     */
-    private void populateParameters(List<String> params, PreparedStatement ps, Map<String, Object> paramMap) {
-        if (paramMap != null && params.size() > 0) {
-            for (int i = 0; i < params.size(); i++) {
-                String paramName = params.get(i);
-                Object value;
-                // 如果由 “.” 号，说明是 Mapper 方法传递过来的对象
-                if (paramName.contains(".")) {
-                    String[] paramNames = paramName.split("\\.");
-                    value = paramMap.get(paramNames[0]);
-                    for (int j = 1; j < paramNames.length; j++) {
-                        value = getFieldValue(paramNames[j], value.getClass(), value);
-                    }
-                } else {
-                    value = paramMap.get(paramName);
-                }
-                try {
-                    configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);
-                } catch (SQLException e) {
-                    throw new JvyouMybatisException("Populating the value passed by the method to PreparedStatement error, nested exception is:\n" + e);
-                }
-            }
-        }
     }
 
     /**
@@ -129,50 +100,5 @@ public class SimpleSqlExecutor implements SqlExecutor {
             throw new JvyouMybatisException("The get database connection failed, and the nested exception was:\n" + e);
         }
     }
-
-    private Object getFieldValue(String fieldName, Class<?> clazz, Object obj) {
-        if (obj == null || obj instanceof Class) {
-            return null;
-        }
-        try {
-            Field field = clazz.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return field.get(obj);
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 处理结果集
-     *
-     * @param resultSet  结果集对象
-     * @param returnType 返回值类型
-     * @return 将结果集里面的内容映射为指定类型的集合，默认根据字段的名称映射
-     */
-    /*private  List handleResult(ResultSet resultSet, Class<?> returnType) {
-        List result = new ArrayList();
-        Field[] fields = returnType.getDeclaredFields();
-
-        try {
-            while (resultSet.next()) {
-                Object obj = returnType.newInstance();
-                for (Field field : fields) {
-                    // 获取字段名称
-                    String fieldName = field.getName();
-                    // 获取字段值
-                    Object fieldValue = configuration.getParamTypeHandler(field.getType()).getResult(resultSet, fieldName);
-                    // 设置字段值
-                    field.setAccessible(true);
-                    field.set(obj, fieldValue);
-                }
-                result.add(obj);
-            }
-        } catch (SQLException | InstantiationException | IllegalAccessException e) {
-            throw new JvyouMybatisException("Mapping a ResultSet to a query result failed with nested exceptions:\n" + e);
-        }
-        return result;
-    }*/
 
 }
