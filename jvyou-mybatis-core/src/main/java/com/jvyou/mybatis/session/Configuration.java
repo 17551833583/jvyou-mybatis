@@ -2,6 +2,8 @@ package com.jvyou.mybatis.session;
 
 import com.jvyou.mybatis.executor.SimpleSqlExecutor;
 import com.jvyou.mybatis.executor.SqlExecutor;
+import com.jvyou.mybatis.executor.resultset.DefaultResultSetHandler;
+import com.jvyou.mybatis.executor.resultset.ResultSetHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.plugin.InterceptorChain;
 import com.jvyou.mybatis.plugin.LimitPlugin;
@@ -79,6 +81,10 @@ public class Configuration {
      */
     public SqlExecutor newSqlExecutor() {
         return interceptorChain.wrap(new SimpleSqlExecutor(this));
+    }
+
+    public ResultSetHandler newResultSetHandler() {
+        return interceptorChain.wrap(new DefaultResultSetHandler(this));
     }
 
 }

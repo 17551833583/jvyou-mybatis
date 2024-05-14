@@ -18,7 +18,7 @@ import java.util.Properties;
 })
 public class SqlLogPlugin implements PluginInterceptor {
 
-
+    
     @Override
     public Object intercept(Invocation invocation) {
         System.out.println("日志插件----开始打印日志");

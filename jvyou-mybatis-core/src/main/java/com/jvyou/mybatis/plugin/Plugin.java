@@ -55,7 +55,7 @@ public class Plugin implements InvocationHandler {
         return target;
     }
 
-    private static Map<Class<?>, Set<Method>> getSignatureMap(PluginInterceptor interceptor) {
+    private static Map<Class<?>, Set<Method>> getSignatureMap(PluginInterceptor interceptor) { 
         Intercepts intercepts = interceptor.getClass().getAnnotation(Intercepts.class);
         Signature[] value = intercepts.value();
         Map<Class<?>, Set<Method>> signatureMap = new HashMap<>();

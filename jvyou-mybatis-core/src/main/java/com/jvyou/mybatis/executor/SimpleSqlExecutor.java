@@ -7,7 +7,6 @@ import com.jvyou.mybatis.session.Configuration;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,17 +30,14 @@ public class SimpleSqlExecutor implements SqlExecutor {
         Class<?> returnType = ms.getResultType();
         // 获取数据库链接
         Connection connection = getConnection();
-        BoundSql boundSql = ms.getBoundSql();
 
-        List result;
+        List<T> result;
         try {
             PreparedStatement ps = execute(connection, ms, parameter);
             // 获取结果集
-            ResultSet resultSet = ps.getResultSet();
             // 处理结果集
-            result = handleResult(resultSet, returnType);
+            result = configuration.newResultSetHandler().handleResultSets(ms, ps);
             // 关闭数据库链接
-            resultSet.close();
             ps.close();
             connection.close();
 
@@ -86,7 +82,6 @@ public class SimpleSqlExecutor implements SqlExecutor {
      * @param params   参数名称列表，解析 SQL 语句时候从占位符中提取
      * @param ps       PreparedStatement 对象
      * @param paramMap 真实参数，key 为 Param 注解的 value 值
-     * @throws SQLException 异常
      */
     private void populateParameters(List<String> params, PreparedStatement ps, Map<String, Object> paramMap) {
         if (paramMap != null && params.size() > 0) {
@@ -156,7 +151,7 @@ public class SimpleSqlExecutor implements SqlExecutor {
      * @param returnType 返回值类型
      * @return 将结果集里面的内容映射为指定类型的集合，默认根据字段的名称映射
      */
-    private List handleResult(ResultSet resultSet, Class<?> returnType) {
+    /*private  List handleResult(ResultSet resultSet, Class<?> returnType) {
         List result = new ArrayList();
         Field[] fields = returnType.getDeclaredFields();
 
@@ -178,6 +173,6 @@ public class SimpleSqlExecutor implements SqlExecutor {
             throw new JvyouMybatisException("Mapping a ResultSet to a query result failed with nested exceptions:\n" + e);
         }
         return result;
-    }
+    }*/
 
 }
