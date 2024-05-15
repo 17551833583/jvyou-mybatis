@@ -1,16 +1,15 @@
 package com.jvyou.mybatis.executor;
 
 import com.jvyou.mybatis.exception.JvyouMybatisException;
-import com.jvyou.mybatis.mapping.BoundSql;
+import com.jvyou.mybatis.executor.statement.StatementHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 橘柚
@@ -28,53 +27,29 @@ public class SimpleSqlExecutor implements SqlExecutor {
 
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
-        // 获取 Mapper 方法的返回值类型
-        Class<?> returnType = ms.getResultType();
         // 获取数据库链接
-        Connection connection = getConnection();
+        StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
+        Statement statement = getStatement(statementHandler);
 
-        List<T> result;
-        try {
-            PreparedStatement ps = execute(connection, ms, parameter);
-            // 获取结果集
-            // 处理结果集
-            result = configuration.newResultSetHandler().handleResultSets(ms, ps);
-            // 关闭数据库链接
-            ps.close();
-            connection.close();
-
-        } catch (SQLException e) {
-            throw new JvyouMybatisException("An error occurred in the execution of the query operation, and the nested exception was：" + e);
-        }
-        return result;
+        return statementHandler.query(statement);
     }
 
     @Override
     public int update(MappedStatement ms, Object parameter) {
-        // 获取数据库链接
-        Connection connection = getConnection();
-        // 修改的行数
-        int row;
-        try {
-            PreparedStatement ps = execute(connection, ms, parameter);
-            row = ps.getUpdateCount();
-            // 关闭数据库链接
-            ps.close();
-            connection.close();
-        } catch (SQLException e) {
-            throw new JvyouMybatisException("An error occurred in the execution of the update operation, and the nested exception was：" + e);
-        }
-        return row;
+        StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
+        Statement statement = getStatement(statementHandler);
+        return statementHandler.update(statement);
     }
 
-    private PreparedStatement execute(Connection connection, MappedStatement ms, Object parameter) throws SQLException {
-        BoundSql boundSql = ms.getBoundSql();
-        PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
+    private Statement getStatement(StatementHandler statementHandler) {
+        // 获取数据库链接
+        Connection connection = getConnection();
+        Statement statement = statementHandler.prepare(connection);
         // 填充参数
-        configuration.newParameterHandler().setParameters(ps, boundSql.getParamNames(), parameter);
-        ps.execute();
-        return ps;
+        statementHandler.parameterize(statement);
+        return statement;
     }
+
 
     /**
      * 获取数据库链接
