@@ -70,10 +70,8 @@ public class SimpleSqlExecutor implements SqlExecutor {
     private PreparedStatement execute(Connection connection, MappedStatement ms, Object parameter) throws SQLException {
         BoundSql boundSql = ms.getBoundSql();
         PreparedStatement ps = connection.prepareStatement(boundSql.getParsedSql());
-        // 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
-        Map<String, Object> paramMap = parameter == null ? null : (Map<String, Object>) parameter;
         // 填充参数
-        configuration.newParamTypeHandler().setParameters(boundSql.getParamNames(), ps, paramMap);
+        configuration.newParameterHandler().setParameters(ps, boundSql.getParamNames(), parameter);
         ps.execute();
         return ps;
     }

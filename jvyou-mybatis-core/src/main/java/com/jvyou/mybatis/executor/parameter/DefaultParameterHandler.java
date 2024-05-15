@@ -24,20 +24,22 @@ public class DefaultParameterHandler implements ParameterHandler {
     }
 
     @Override
-    public void setParameters(List<String> params, PreparedStatement ps, Map<String, Object> paramMap) {
-        if (paramMap != null && params.size() > 0) {
-            for (int i = 0; i < params.size(); i++) {
-                String paramName = params.get(i);
+    public void setParameters(PreparedStatement ps, List<String> paramNames, Object parameter) {
+        // Mapper 代理方法传递过来的真实参数，key值为 Param 注解 value 的值
+        Map<String, Object> paramValueMap = (Map<String, Object>) parameter;
+        if (paramValueMap != null && paramNames.size() > 0) {
+            for (int i = 0; i < paramNames.size(); i++) {
+                String paramName = paramNames.get(i);
                 Object value;
                 // 如果由 “.” 号，说明是 Mapper 方法传递过来的对象
                 if (paramName.contains(".")) {
-                    String[] paramNames = paramName.split("\\.");
-                    value = paramMap.get(paramNames[0]);
-                    for (int j = 1; j < paramNames.length; j++) {
-                        value = getFieldValue(paramNames[j], value.getClass(), value);
+                    String[] names = paramName.split("\\.");
+                    value = paramValueMap.get(names[0]);
+                    for (int j = 1; j < names.length; j++) {
+                        value = getFieldValue(names[j], value.getClass(), value);
                     }
                 } else {
-                    value = paramMap.get(paramName);
+                    value = paramValueMap.get(paramName);
                 }
                 try {
                     configuration.getParamTypeHandler(value.getClass()).setParameter(ps, i + 1, value);

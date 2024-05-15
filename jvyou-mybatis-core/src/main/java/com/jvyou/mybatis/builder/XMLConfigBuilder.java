@@ -39,7 +39,6 @@ public class XMLConfigBuilder {
                 SqlCommandType sqlCommandType = SqlCommandType.SELECT;
                 if (method.isAnnotationPresent(Select.class)) {
                     originalSql = method.getAnnotation(Select.class).value();
-                    sqlCommandType = SqlCommandType.SELECT;
                 } else if (method.isAnnotationPresent(Update.class)) {
                     originalSql = method.getAnnotation(Update.class).value();
                     sqlCommandType = SqlCommandType.UPDATE;
@@ -63,8 +62,7 @@ public class XMLConfigBuilder {
                             ? (Class<?>) ((ParameterizedType) genericReturnType).getActualTypeArguments()[0]
                             : (Class<?>) ((ParameterizedType) genericReturnType).getRawType();
                 }
-
-
+                // 构建 MappedStatement
                 MappedStatement mappedStatement = MappedStatement.builder()
                         .id(aClass.getName() + "." + method.getName())
                         .sql(originalSql)

@@ -12,6 +12,6 @@ import java.util.Map;
  */
 public interface ParameterHandler {
 
-    void setParameters(List<String> params, PreparedStatement ps, Map<String, Object> paramMap);
+    void setParameters(PreparedStatement ps,List<String> paramNames, Object parameter);
 
 }

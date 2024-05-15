@@ -90,7 +90,7 @@ public class Configuration {
         return interceptorChain.wrap(new DefaultResultSetHandler(this));
     }
 
-    public ParameterHandler newParamTypeHandler() {
+    public ParameterHandler newParameterHandler() {
         return interceptorChain.wrap(new DefaultParameterHandler(this));
     }
 
