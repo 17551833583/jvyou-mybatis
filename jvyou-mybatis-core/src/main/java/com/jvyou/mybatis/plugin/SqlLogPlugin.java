@@ -1,11 +1,10 @@
 package com.jvyou.mybatis.plugin;
 
-import com.jvyou.mybatis.executor.resultset.ResultSetHandler;
-import com.jvyou.mybatis.mapping.BoundSql;
+import com.jvyou.mybatis.executor.statement.StatementHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
-import lombok.extern.slf4j.Slf4j;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.Properties;
 
 /**
@@ -15,7 +14,8 @@ import java.util.Properties;
  * @Description SQL 日志打印插件
  */
 @Intercepts({
-        @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {MappedStatement.class, PreparedStatement.class}),
+        @Signature(type = StatementHandler.class, method = "query", args = Statement.class),
+        @Signature(type = StatementHandler.class, method = "update", args = Statement.class),
 })
 public class SqlLogPlugin implements PluginInterceptor {
 
@@ -23,8 +23,7 @@ public class SqlLogPlugin implements PluginInterceptor {
     @Override
     public Object intercept(Invocation invocation) {
         System.out.println("日志插件----开始打印日志");
-        BoundSql boundSql = ((MappedStatement) invocation.getArgs()[0]).getBoundSql();
-        PreparedStatement ps = (PreparedStatement) invocation.getArgs()[1];
+        PreparedStatement ps = (PreparedStatement) invocation.getArgs()[0];
         System.out.println(ps);
         Object result = invocation.proceed();
         System.out.println("日志插件----结束打印日志");
