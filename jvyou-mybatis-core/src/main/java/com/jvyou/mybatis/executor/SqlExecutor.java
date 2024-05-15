@@ -12,7 +12,22 @@ import java.util.List;
  */
 public interface SqlExecutor {
 
-    <T> List<T> query(MappedStatement ps, Object parameter);
+    /**
+     * 执行查询
+     *
+     * @param ms        MappedStatement 映射语句对象
+     * @param parameter 参数（传递过来的可能是一个 Map 集合）
+     * @param <T>       实体类集合
+     * @return 实体类集合
+     */
+    <T> List<T> query(MappedStatement ms, Object parameter);
 
+    /**
+     * 执行更新
+     *
+     * @param ms        MappedStatement 映射语句对象
+     * @param parameter 参数（传递过来的可能是一个 Map 集合）
+     * @return 更新的行数
+     */
     int update(MappedStatement ms, Object parameter);
 }

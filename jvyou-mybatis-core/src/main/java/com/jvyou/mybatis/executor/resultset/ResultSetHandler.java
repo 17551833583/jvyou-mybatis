@@ -13,6 +13,14 @@ import java.util.List;
  */
 public interface ResultSetHandler {
 
+    /**
+     * 处理结果集，将结果集（ResultSet）映射成实体类
+     *
+     * @param ms  MappedStatement 映射语句对象
+     * @param ps  PreparedStatement 预编译语句
+     * @param <T> 实体类集合
+     * @return 实体类集合
+     */
     <T> List<T> handleResultSets(MappedStatement ms, PreparedStatement ps);
 
 }

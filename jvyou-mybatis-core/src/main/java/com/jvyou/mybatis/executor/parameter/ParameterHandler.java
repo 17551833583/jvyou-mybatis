@@ -2,7 +2,6 @@ package com.jvyou.mybatis.executor.parameter;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author 橘柚
@@ -12,6 +11,13 @@ import java.util.Map;
  */
 public interface ParameterHandler {
 
-    void setParameters(PreparedStatement ps,List<String> paramNames, Object parameter);
+    /**
+     * 预编译SQL语句对象设置参数
+     *
+     * @param ps         PreparedStatement 预编译语句对象
+     * @param paramNames 参数名称列表
+     * @param parameter  参数（传递过来的可能是一个 Map 集合）
+     */
+    void setParameters(PreparedStatement ps, List<String> paramNames, Object parameter);
 
 }
