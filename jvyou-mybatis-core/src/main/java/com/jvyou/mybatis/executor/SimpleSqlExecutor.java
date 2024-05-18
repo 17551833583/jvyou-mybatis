@@ -1,13 +1,11 @@
 package com.jvyou.mybatis.executor;
 
-import com.jvyou.mybatis.exception.JvyouMybatisException;
 import com.jvyou.mybatis.executor.statement.StatementHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
+import lombok.SneakyThrows;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
@@ -56,22 +54,9 @@ public class SimpleSqlExecutor implements SqlExecutor {
      *
      * @return 数据库链接
      */
+    @SneakyThrows
     private Connection getConnection() {
-        // 加载数据库驱动
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            throw new JvyouMybatisException("Loading the database driver failed with nested exceptions:\n" + e);
-        }
-        // 获取数据库链接
-        String url = "jdbc:mysql://127.0.0.1:3306/jvyou-mybatis?useUnicode=true&characterEncoding=UTF8&useSSL=false";
-        String username = "root";
-        String password = "123456";
-        try {
-            return DriverManager.getConnection(url, username, password);
-        } catch (SQLException e) {
-            throw new JvyouMybatisException("The get database connection failed, and the nested exception was:\n" + e);
-        }
+        return configuration.getDataSource().getConnection();
     }
 
 }

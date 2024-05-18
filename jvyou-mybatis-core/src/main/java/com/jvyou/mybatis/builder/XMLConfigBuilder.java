@@ -5,6 +5,7 @@ import com.jvyou.mybatis.annotations.Delete;
 import com.jvyou.mybatis.annotations.Insert;
 import com.jvyou.mybatis.annotations.Select;
 import com.jvyou.mybatis.annotations.Update;
+import com.jvyou.mybatis.datasource.PooledDataSource;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.mapping.SqlCommandType;
 import com.jvyou.mybatis.session.Configuration;
@@ -26,7 +27,19 @@ public class XMLConfigBuilder {
         Configuration configuration = new Configuration();
         // 解析 Mapper
         parseMapper(configuration);
+        // 解析数据源
+        parseDataSource(configuration);
         return configuration;
+    }
+
+    private void parseDataSource(Configuration configuration) {
+        // 获取数据源配置
+        String driver = "com.mysql.cj.jdbc.Driver";
+        String url = "jdbc:mysql://127.0.0.1:3306/jvyou-mybatis?useUnicode=true&characterEncoding=UTF8&useSSL=false";
+        String username = "root";
+        String password = "123456";
+        // 创建数据源
+        configuration.setDataSource(new PooledDataSource(username, password, driver, url));
     }
 
     private void parseMapper(Configuration configuration) {

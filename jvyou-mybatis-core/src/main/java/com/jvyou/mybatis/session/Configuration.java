@@ -17,6 +17,7 @@ import com.jvyou.mybatis.type.ParamTypeHandler;
 import com.jvyou.mybatis.type.StringParamHandler;
 import lombok.Data;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +38,9 @@ public class Configuration {
     // 责任链
     private InterceptorChain interceptorChain = new InterceptorChain();
 
+    //数据源
+    private DataSource dataSource;
+
     public Configuration() {
         // 添加默认的类型处理器
         paramTypeHandlerMap.put(String.class, new StringParamHandler());
@@ -44,6 +48,14 @@ public class Configuration {
         // 添加默认的插件拦截器
         interceptorChain.addInterceptor(new SqlLogPlugin());
         interceptorChain.addInterceptor(new LimitPlugin());
+    }
+
+    public DataSource getDataSource() {
+        return dataSource;
+    }
+
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     /**
