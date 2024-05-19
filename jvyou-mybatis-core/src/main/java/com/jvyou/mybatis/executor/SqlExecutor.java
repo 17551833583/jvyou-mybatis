@@ -47,4 +47,6 @@ public interface SqlExecutor {
      * @throws SQLException SQL异常
      */
     void rollback(boolean required) throws SQLException;
+
+    void close();
 }

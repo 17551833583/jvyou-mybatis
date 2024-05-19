@@ -21,23 +21,19 @@ import java.util.List;
  */
 public class MapperProxyInvocationHandlerTest {
 
-    private UserMapper userMapper;
-
     private SqlSessionFactory sqlSessionFactory;
-
-    private SqlSession session;
 
     @BeforeEach
     void before() {
         long start = System.currentTimeMillis();
         this.sqlSessionFactory = new SqlSessionFactoryBuilder().build();
-        this.session = sqlSessionFactory.openSession(true);
-        userMapper = session.getMapper(UserMapper.class);
         System.out.println("初始化耗时：" + (System.currentTimeMillis() - start));
     }
 
     @Test
     void getAll() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         List<User> users = userMapper.getAll();
         System.out.println(JSONUtil.toJsonStr(users));
     }
@@ -46,6 +42,8 @@ public class MapperProxyInvocationHandlerTest {
     @Test
     void testPool() {
         long start = System.currentTimeMillis();
+        SqlSession session = sqlSessionFactory.openSession();
+        UserMapper userMapper = session.getMapper(UserMapper.class);
         for (int i = 0; i < 100; i++) {
             System.out.println("第" + (i + 1) + "次获取连接");
             List<User> users = userMapper.getList("jvyou", 1);
@@ -57,18 +55,24 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void getList() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         List<User> users = userMapper.getList("jvyou", 1);
         System.out.println(JSONUtil.toJsonStr(users));
     }
 
     @Test
     void getOne() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         User jvyou = userMapper.getOne("jvyou", 1);
         System.out.println(JSONUtil.toJsonStr(jvyou));
     }
 
     @Test
     void count() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         Integer count = userMapper.count();
         System.out.println(count);
     }
@@ -87,17 +91,22 @@ public class MapperProxyInvocationHandlerTest {
         } catch (Exception e) {
             sqlSession.rollback();
         }
+        sqlSession.close();
         System.out.println(row);
     }
 
     @Test
     void insert() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         int row = userMapper.insert(RandomUtil.randomString(5), RandomUtil.randomInt(0, 100));
         System.out.println(row);
     }
 
     @Test
     void updateByUser() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         User user = new User();
         user.setName(RandomUtil.randomString(5));
         user.setAge(RandomUtil.randomInt(0, 100));
@@ -108,6 +117,8 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void updateByUserVo() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         User user = new User();
         user.setName(RandomUtil.randomString(5));
         user.setAge(RandomUtil.randomInt(0, 100));
@@ -118,12 +129,16 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void update() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         Integer row = userMapper.update(26007, "yya", 18);
         System.out.println(row);
     }
 
     @Test
     void delete() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         boolean row = userMapper.delete(26007);
         System.out.println(row);
     }

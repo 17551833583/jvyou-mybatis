@@ -73,7 +73,7 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public void close() {
-
+        sqlExecutor.close();
     }
 
     @SneakyThrows

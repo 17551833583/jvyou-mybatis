@@ -23,7 +23,7 @@ public class SimpleSqlExecutor implements SqlExecutor {
 
     private final Transaction transaction;
 
-    public SimpleSqlExecutor(Configuration configuration,Transaction transaction) {
+    public SimpleSqlExecutor(Configuration configuration, Transaction transaction) {
         this.configuration = configuration;
         this.transaction = transaction;
     }
@@ -32,25 +32,20 @@ public class SimpleSqlExecutor implements SqlExecutor {
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
         // 获取数据库链接
-        Connection connection = this.transaction.getConnection();
         StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
-        Statement statement = getStatement(connection, statementHandler);
+        Statement statement = getStatement(statementHandler);
         List<T> result = statementHandler.query(statement);
         statement.close();
-        connection.close();
         return result;
     }
 
     @SneakyThrows
     @Override
     public int update(MappedStatement ms, Object parameter) {
-        // 获取数据库链接
-        Connection connection = this.transaction.getConnection();
         StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
-        Statement statement = getStatement(connection, statementHandler);
-        int row=statementHandler.update(statement);
+        Statement statement = getStatement(statementHandler);
+        int row = statementHandler.update(statement);
         statement.close();
-        connection.close();
         return row;
     }
 
@@ -66,8 +61,14 @@ public class SimpleSqlExecutor implements SqlExecutor {
         transaction.rollback();
     }
 
-    private Statement getStatement(Connection connection, StatementHandler statementHandler) {
+    @SneakyThrows
+    @Override
+    public void close() {
+        transaction.close();
+    }
 
+    private Statement getStatement(StatementHandler statementHandler) {
+        Connection connection = this.transaction.getConnection();
         Statement statement = statementHandler.prepare(connection);
         // 填充参数
         statementHandler.parameterize(statement);

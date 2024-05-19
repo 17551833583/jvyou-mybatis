@@ -27,7 +27,9 @@ public class JdbcTransaction implements Transaction {
     @SneakyThrows
     @Override
     public Connection getConnection() {
-        this.connection = dataSource.getConnection();
+        if (connection == null){
+            this.connection = dataSource.getConnection();
+        }
         // 设置自动提交
         this.connection.setAutoCommit(autoCommit);
         return this.connection;
