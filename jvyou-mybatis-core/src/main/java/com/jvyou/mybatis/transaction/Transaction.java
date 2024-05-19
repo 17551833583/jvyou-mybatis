@@ -10,12 +10,26 @@ import java.sql.Connection;
  */
 public interface Transaction {
 
+    /**
+     * 从数据源获取连接，并将连接开启是否自动提交
+     *
+     * @return 数据库连接
+     */
     Connection getConnection();
 
-    void commit() throws Exception;
+    /**
+     * 提交事务
+     */
+    void commit();
 
-    void rollback() throws Exception;
+    /**
+     * 回滚事务
+     */
+    void rollback();
 
-    void close() throws Exception;
+    /**
+     * 关闭事务
+     */
+    void close();
 
 }

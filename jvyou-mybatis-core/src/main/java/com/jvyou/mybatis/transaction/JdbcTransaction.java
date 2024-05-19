@@ -35,22 +35,25 @@ public class JdbcTransaction implements Transaction {
         return this.connection;
     }
 
+    @SneakyThrows
     @Override
-    public void commit() throws Exception {
+    public void commit()  {
         if (connection != null && !autoCommit) {
             connection.commit();
         }
     }
 
+    @SneakyThrows
     @Override
-    public void rollback() throws Exception {
+    public void rollback()  {
         if (connection != null && !autoCommit) {
             connection.rollback();
         }
     }
 
+    @SneakyThrows
     @Override
-    public void close() throws Exception {
+    public void close() {
         if (connection != null) {
             connection.close();
         }
