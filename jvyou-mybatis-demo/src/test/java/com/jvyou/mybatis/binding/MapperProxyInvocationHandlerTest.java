@@ -25,15 +25,30 @@ public class MapperProxyInvocationHandlerTest {
 
     @BeforeEach
     void before() {
+        long start = System.currentTimeMillis();
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build();
         SqlSession session = sqlSessionFactory.openSession();
         userMapper = session.getMapper(UserMapper.class);
+        System.out.println("初始化耗时：" + (System.currentTimeMillis() - start));
     }
 
     @Test
     void getAll() {
         List<User> users = userMapper.getAll();
         System.out.println(JSONUtil.toJsonStr(users));
+    }
+
+
+    @Test
+    void testPool() {
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 100; i++) {
+            System.out.println("第" + (i + 1) + "次获取连接");
+            List<User> users = userMapper.getList("jvyou", 1);
+            System.out.println(JSONUtil.toJsonStr(users));
+            System.out.println("--------------------------");
+        }
+        System.out.println("执行SQL：" + (System.currentTimeMillis() - start));
     }
 
     @Test

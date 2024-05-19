@@ -23,25 +23,34 @@ public class SimpleSqlExecutor implements SqlExecutor {
         this.configuration = configuration;
     }
 
+    @SneakyThrows
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
         // 获取数据库链接
+        Connection connection = getConnection();
         StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
-        Statement statement = getStatement(statementHandler);
-
-        return statementHandler.query(statement);
+        Statement statement = getStatement(connection, statementHandler);
+        List<T> result = statementHandler.query(statement);
+        statement.close();
+        connection.close();
+        return result;
     }
 
+    @SneakyThrows
     @Override
     public int update(MappedStatement ms, Object parameter) {
-        StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
-        Statement statement = getStatement(statementHandler);
-        return statementHandler.update(statement);
-    }
-
-    private Statement getStatement(StatementHandler statementHandler) {
         // 获取数据库链接
         Connection connection = getConnection();
+        StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
+        Statement statement = getStatement(connection, statementHandler);
+        int row=statementHandler.update(statement);
+        statement.close();
+        connection.close();
+        return row;
+    }
+
+    private Statement getStatement(Connection connection, StatementHandler statementHandler) {
+
         Statement statement = statementHandler.prepare(connection);
         // 填充参数
         statementHandler.parameterize(statement);

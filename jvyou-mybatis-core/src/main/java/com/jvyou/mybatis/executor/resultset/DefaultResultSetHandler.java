@@ -3,6 +3,7 @@ package com.jvyou.mybatis.executor.resultset;
 import com.jvyou.mybatis.exception.JvyouMybatisException;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
+import lombok.SneakyThrows;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -25,6 +26,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         this.configuration = configuration;
     }
 
+    @SneakyThrows
     @Override
     public <T> List<T> handleResultSets(MappedStatement ms, PreparedStatement ps) {
         Class<?> returnType = ms.getResultType();
@@ -55,6 +57,8 @@ public class DefaultResultSetHandler implements ResultSetHandler {
         } catch (SQLException | InstantiationException | IllegalAccessException e) {
             throw new JvyouMybatisException("Mapping a ResultSet to a query result failed with nested exceptions:\n" + e);
         }
+
+        resultSet.close();
         return result;
     }
 }
