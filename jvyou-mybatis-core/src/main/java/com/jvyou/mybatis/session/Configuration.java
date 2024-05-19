@@ -12,9 +12,9 @@ import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.plugin.InterceptorChain;
 import com.jvyou.mybatis.plugin.LimitPlugin;
 import com.jvyou.mybatis.plugin.SqlLogPlugin;
-import com.jvyou.mybatis.type.IntegerParamHandler;
-import com.jvyou.mybatis.type.ParamTypeHandler;
-import com.jvyou.mybatis.type.StringParamHandler;
+import com.jvyou.mybatis.type.IntegerHandler;
+import com.jvyou.mybatis.type.TypeHandler;
+import com.jvyou.mybatis.type.StringHandler;
 import lombok.Data;
 
 import javax.sql.DataSource;
@@ -34,7 +34,7 @@ public class Configuration {
     private Map<String, MappedStatement> mappedStatements = new HashMap<>();
     // 类型处理器映射
     @SuppressWarnings("rawtypes")
-    private final Map<Class, ParamTypeHandler> paramTypeHandlerMap = new HashMap<>();
+    private final Map<Class, TypeHandler> paramTypeHandlerMap = new HashMap<>();
     // 责任链
     private InterceptorChain interceptorChain = new InterceptorChain();
 
@@ -43,8 +43,8 @@ public class Configuration {
 
     public Configuration() {
         // 添加默认的类型处理器
-        paramTypeHandlerMap.put(String.class, new StringParamHandler());
-        paramTypeHandlerMap.put(Integer.class, new IntegerParamHandler());
+        paramTypeHandlerMap.put(String.class, new StringHandler());
+        paramTypeHandlerMap.put(Integer.class, new IntegerHandler());
         // 添加默认的插件拦截器
         interceptorChain.addInterceptor(new SqlLogPlugin());
         interceptorChain.addInterceptor(new LimitPlugin());
@@ -86,7 +86,7 @@ public class Configuration {
      * @return 返回与给定类型相匹配的参数类型处理器，如果找不到匹配的处理器则返回null。
      */
     @SuppressWarnings("unchecked")
-    public <T> ParamTypeHandler<T> getParamTypeHandler(Class type) {
+    public <T> TypeHandler<T> getParamTypeHandler(Class type) {
         // 从参数类型处理器映射中获取与给定类型相匹配的处理器
         return paramTypeHandlerMap.get(type);
     }

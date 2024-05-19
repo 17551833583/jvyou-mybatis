@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * @Date 2024/4/26 16:42
  * @Description 参数类型处理器
  */
-public interface ParamTypeHandler<T> {
+public interface TypeHandler<T> {
 
     void setParameter(PreparedStatement ps, int i, T value) throws SQLException;
 

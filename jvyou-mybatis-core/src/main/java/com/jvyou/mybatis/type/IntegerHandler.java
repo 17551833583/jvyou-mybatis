@@ -10,7 +10,7 @@ import java.sql.SQLException;
  * @Date 2024/4/26 16:45
  * @Description Integer 类型参数处理器
  */
-public class IntegerParamHandler implements ParamTypeHandler<Integer> {
+public class IntegerHandler implements TypeHandler<Integer> {
     @Override
     public void setParameter(PreparedStatement ps, int i, Integer value) throws SQLException {
         ps.setInt(i, value);
