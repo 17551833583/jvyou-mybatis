@@ -26,6 +26,10 @@ public interface SqlSession {
 
     void close();
 
+    void commit();
+
+    void rollback();
+
     Configuration getConfiguration();
 
 }

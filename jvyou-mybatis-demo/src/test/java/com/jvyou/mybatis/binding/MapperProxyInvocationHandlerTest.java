@@ -23,11 +23,15 @@ public class MapperProxyInvocationHandlerTest {
 
     private UserMapper userMapper;
 
+    private SqlSessionFactory sqlSessionFactory;
+
+    private SqlSession session;
+
     @BeforeEach
     void before() {
         long start = System.currentTimeMillis();
-        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build();
-        SqlSession session = sqlSessionFactory.openSession();
+        this.sqlSessionFactory = new SqlSessionFactoryBuilder().build();
+        this.session = sqlSessionFactory.openSession(true);
         userMapper = session.getMapper(UserMapper.class);
         System.out.println("初始化耗时：" + (System.currentTimeMillis() - start));
     }
@@ -71,10 +75,18 @@ public class MapperProxyInvocationHandlerTest {
 
     @Test
     void insertByUser() {
+        SqlSession sqlSession = sqlSessionFactory.openSession(false);
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         User user = new User();
         user.setName(RandomUtil.randomString(5));
         user.setAge(RandomUtil.randomInt(0, 100));
         Integer row = userMapper.insertByUser(user);
+        try {
+            int i = 1 / 0;
+            sqlSession.commit();
+        } catch (Exception e) {
+            sqlSession.rollback();
+        }
         System.out.println(row);
     }
 

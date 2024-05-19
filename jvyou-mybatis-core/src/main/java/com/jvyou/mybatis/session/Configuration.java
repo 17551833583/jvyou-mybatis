@@ -12,6 +12,7 @@ import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.plugin.InterceptorChain;
 import com.jvyou.mybatis.plugin.LimitPlugin;
 import com.jvyou.mybatis.plugin.SqlLogPlugin;
+import com.jvyou.mybatis.transaction.Transaction;
 import com.jvyou.mybatis.type.IntegerHandler;
 import com.jvyou.mybatis.type.TypeHandler;
 import com.jvyou.mybatis.type.StringHandler;
@@ -96,8 +97,8 @@ public class Configuration {
      *
      * @return 返回包装后的 SqlExecutor 对象。
      */
-    public SqlExecutor newSqlExecutor() {
-        return interceptorChain.wrap(new SimpleSqlExecutor(this));
+    public SqlExecutor newSqlExecutor(Transaction transaction) {
+        return interceptorChain.wrap(new SimpleSqlExecutor(this,transaction));
     }
 
     public ResultSetHandler newResultSetHandler() {

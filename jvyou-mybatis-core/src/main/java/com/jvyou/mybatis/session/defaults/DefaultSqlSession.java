@@ -6,6 +6,7 @@ import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.session.SqlSession;
+import lombok.SneakyThrows;
 
 import java.util.List;
 
@@ -73,6 +74,18 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public void close() {
 
+    }
+
+    @SneakyThrows
+    @Override
+    public void commit() {
+        sqlExecutor.commit(false);
+    }
+
+    @SneakyThrows
+    @Override
+    public void rollback() {
+        sqlExecutor.rollback(false);
     }
 
     @Override

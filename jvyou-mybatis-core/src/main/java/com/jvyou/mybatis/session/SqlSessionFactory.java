@@ -8,6 +8,21 @@ package com.jvyou.mybatis.session;
  */
 public interface SqlSessionFactory {
 
-    SqlSession openSession();
+    /**
+     * 获取 SqlSession，默认不自动提交事务
+     *
+     * @return SqlSession
+     */
+    default SqlSession openSession() {
+        return openSession(false);
+    }
+
+    /**
+     * 获取 SqlSession
+     *
+     * @param autoCommit 是否自动提交
+     * @return SqlSession
+     */
+    SqlSession openSession(boolean autoCommit);
 
 }

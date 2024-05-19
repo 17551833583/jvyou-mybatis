@@ -2,6 +2,7 @@ package com.jvyou.mybatis.executor;
 
 import com.jvyou.mybatis.mapping.MappedStatement;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -30,4 +31,20 @@ public interface SqlExecutor {
      * @return 更新的行数
      */
     int update(MappedStatement ms, Object parameter);
+
+    /**
+     * 提交事务
+     *
+     * @param required 是否强制提交提交
+     * @throws SQLException SQL异常
+     */
+    void commit(boolean required) throws SQLException;
+
+    /**
+     * 回滚事务
+     *
+     * @param required 是否强制回滚
+     * @throws SQLException SQL异常
+     */
+    void rollback(boolean required) throws SQLException;
 }

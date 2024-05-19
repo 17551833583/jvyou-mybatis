@@ -3,9 +3,11 @@ package com.jvyou.mybatis.executor;
 import com.jvyou.mybatis.executor.statement.StatementHandler;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
+import com.jvyou.mybatis.transaction.Transaction;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
@@ -19,15 +21,18 @@ public class SimpleSqlExecutor implements SqlExecutor {
 
     private final Configuration configuration;
 
-    public SimpleSqlExecutor(Configuration configuration) {
+    private final Transaction transaction;
+
+    public SimpleSqlExecutor(Configuration configuration,Transaction transaction) {
         this.configuration = configuration;
+        this.transaction = transaction;
     }
 
     @SneakyThrows
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
         // 获取数据库链接
-        Connection connection = getConnection();
+        Connection connection = this.transaction.getConnection();
         StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
         Statement statement = getStatement(connection, statementHandler);
         List<T> result = statementHandler.query(statement);
@@ -40,13 +45,25 @@ public class SimpleSqlExecutor implements SqlExecutor {
     @Override
     public int update(MappedStatement ms, Object parameter) {
         // 获取数据库链接
-        Connection connection = getConnection();
+        Connection connection = this.transaction.getConnection();
         StatementHandler statementHandler = configuration.newStatementHandler(ms, parameter);
         Statement statement = getStatement(connection, statementHandler);
         int row=statementHandler.update(statement);
         statement.close();
         connection.close();
         return row;
+    }
+
+    @SneakyThrows
+    @Override
+    public void commit(boolean required) throws SQLException {
+        transaction.commit();
+    }
+
+    @SneakyThrows
+    @Override
+    public void rollback(boolean required) throws SQLException {
+        transaction.rollback();
     }
 
     private Statement getStatement(Connection connection, StatementHandler statementHandler) {
@@ -57,15 +74,5 @@ public class SimpleSqlExecutor implements SqlExecutor {
         return statement;
     }
 
-
-    /**
-     * 获取数据库链接
-     *
-     * @return 数据库链接
-     */
-    @SneakyThrows
-    private Connection getConnection() {
-        return configuration.getDataSource().getConnection();
-    }
 
 }
