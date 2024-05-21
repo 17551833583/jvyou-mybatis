@@ -1,7 +1,6 @@
 package com.jvyou.mybatis.plugin;
 
 import com.jvyou.mybatis.executor.statement.StatementHandler;
-import com.jvyou.mybatis.mapping.MappedStatement;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -22,12 +21,11 @@ public class SqlLogPlugin implements PluginInterceptor {
 
     @Override
     public Object intercept(Invocation invocation) {
-        System.out.println("日志插件----开始打印日志");
+
         PreparedStatement ps = (PreparedStatement) invocation.getArgs()[0];
-        System.out.println(ps);
-        Object result = invocation.proceed();
-        System.out.println("日志插件----结束打印日志");
-        return result;
+        String sql = ps.toString().replace("com.mysql.cj.jdbc.ClientPreparedStatement:", "").trim();
+        System.err.println("SQL:" + sql);
+        return invocation.proceed();
     }
 
     @Override

@@ -25,4 +25,6 @@ public interface SqlSessionFactory {
      */
     SqlSession openSession(boolean autoCommit);
 
+    SqlSession openSession(TransactionIsolationLevel level);
+
 }

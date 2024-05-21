@@ -45,15 +45,17 @@ public class TestJdbc {
         connection.setAutoCommit(false);
         boolean isAuto = connection.getAutoCommit();
         System.out.println("是否自动提交：" + isAuto);
+        System.out.println("事务隔离级别：" + connection.getTransactionIsolation());
         // 3.执行数据库操作
         PreparedStatement ps = connection.prepareStatement("insert t_user(name,age) values ('test',10)");
         ps.execute();
-        System.out.println(ps.getUpdateCount());
         try {
             int i = 1 / 0;
             connection.commit();
+            System.out.println(ps.getUpdateCount());
         } catch (Exception e) {
             connection.rollback();
+            System.out.println("事务回滚");
         }
         // 5.关闭数据库链接
         ps.close();

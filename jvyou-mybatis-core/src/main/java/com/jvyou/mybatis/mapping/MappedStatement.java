@@ -59,4 +59,8 @@ public class MappedStatement implements SQLKeyword {
         return new BoundSql(parsedSql, params);
     }
 
+    public String getCacheKey(Object parameter) {
+        return id + ":" + sql + ":" + parameter;
+    }
+
 }

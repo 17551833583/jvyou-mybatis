@@ -3,6 +3,7 @@ package com.jvyou.mybatis.session.defaults;
 import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.session.SqlSession;
 import com.jvyou.mybatis.session.SqlSessionFactory;
+import com.jvyou.mybatis.session.TransactionIsolationLevel;
 import com.jvyou.mybatis.transaction.JdbcTransaction;
 import com.jvyou.mybatis.transaction.Transaction;
 
@@ -24,5 +25,15 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     public SqlSession openSession(boolean autoCommit) {
         Transaction transaction = new JdbcTransaction(configuration.getDataSource(), autoCommit);
         return new DefaultSqlSession(configuration, configuration.newSqlExecutor(transaction));
+    }
+
+    @Override
+    public SqlSession openSession(TransactionIsolationLevel level) {
+        return null;
+    }
+
+    private SqlSession openSessionFromDataSource(TransactionIsolationLevel level, boolean autoCommit) {
+        Transaction transaction = new JdbcTransaction(configuration.getDataSource(), autoCommit);
+        return null;
     }
 }

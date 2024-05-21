@@ -3,8 +3,6 @@ package com.jvyou.mybatis.plugin;
 import com.jvyou.mybatis.executor.SqlExecutor;
 import com.jvyou.mybatis.mapping.MappedStatement;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -18,21 +16,15 @@ import java.util.Properties;
 })
 public class LimitPlugin implements PluginInterceptor {
 
-    private static final List<String> LIMITED_STATEMENT = new ArrayList<>();
-
 
     @Override
     public Object intercept(Invocation invocation) {
-        System.out.println("分页插件---开始分页");
         MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
         String sql = ms.getSql();
-        if (!LIMITED_STATEMENT.contains(ms.getId())) {
+        if (!sql.contains("limit")) {
             ms.setSql(sql + " limit 0,2");
-            LIMITED_STATEMENT.add(ms.getId());
         }
-        Object result = invocation.proceed();
-        System.out.println("分页插件---结束分页");
-        return result;
+        return invocation.proceed();
     }
 
     @Override

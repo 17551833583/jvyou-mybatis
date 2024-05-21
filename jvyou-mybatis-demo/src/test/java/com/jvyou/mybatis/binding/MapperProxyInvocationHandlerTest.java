@@ -50,6 +50,7 @@ public class MapperProxyInvocationHandlerTest {
             System.out.println(JSONUtil.toJsonStr(users));
             System.out.println("--------------------------");
         }
+        session.close();
         System.out.println("执行SQL：" + (System.currentTimeMillis() - start));
     }
 
