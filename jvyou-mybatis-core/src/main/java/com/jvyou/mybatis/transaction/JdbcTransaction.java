@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.transaction;
 
+import com.jvyou.mybatis.session.TransactionIsolationLevel;
 import lombok.SneakyThrows;
 
 import javax.sql.DataSource;
@@ -19,25 +20,29 @@ public class JdbcTransaction implements Transaction {
 
     private final boolean autoCommit;
 
-    public JdbcTransaction(DataSource dataSource, boolean autoCommit) {
+    private final TransactionIsolationLevel isolationLevel;
+
+    public JdbcTransaction(DataSource dataSource, boolean autoCommit, TransactionIsolationLevel isolationLevel) {
         this.dataSource = dataSource;
         this.autoCommit = autoCommit;
+        this.isolationLevel = isolationLevel;
     }
 
     @SneakyThrows
     @Override
     public Connection getConnection() {
-        if (connection == null){
+        if (connection == null) {
             this.connection = dataSource.getConnection();
         }
         // 设置自动提交
         this.connection.setAutoCommit(autoCommit);
+        this.connection.setTransactionIsolation(isolationLevel.getLevel());
         return this.connection;
     }
 
     @SneakyThrows
     @Override
-    public void commit()  {
+    public void commit() {
         if (connection != null && !autoCommit) {
             connection.commit();
         }
@@ -45,7 +50,7 @@ public class JdbcTransaction implements Transaction {
 
     @SneakyThrows
     @Override
-    public void rollback()  {
+    public void rollback() {
         if (connection != null && !autoCommit) {
             connection.rollback();
         }

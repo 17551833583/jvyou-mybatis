@@ -23,17 +23,16 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
 
     @Override
     public SqlSession openSession(boolean autoCommit) {
-        Transaction transaction = new JdbcTransaction(configuration.getDataSource(), autoCommit);
-        return new DefaultSqlSession(configuration, configuration.newSqlExecutor(transaction));
+        return openSessionFromDataSource(TransactionIsolationLevel.DEFAULT, autoCommit);
     }
 
     @Override
     public SqlSession openSession(TransactionIsolationLevel level) {
-        return null;
+        return openSessionFromDataSource(level, false);
     }
 
     private SqlSession openSessionFromDataSource(TransactionIsolationLevel level, boolean autoCommit) {
-        Transaction transaction = new JdbcTransaction(configuration.getDataSource(), autoCommit);
-        return null;
+        Transaction transaction = new JdbcTransaction(configuration.getDataSource(), autoCommit, level);
+        return new DefaultSqlSession(configuration, configuration.newSqlExecutor(transaction));
     }
 }

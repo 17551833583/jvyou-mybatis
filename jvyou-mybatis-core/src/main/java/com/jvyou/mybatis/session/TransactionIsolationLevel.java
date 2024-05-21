@@ -10,6 +10,8 @@ import java.sql.Connection;
  */
 public enum TransactionIsolationLevel {
 
+    DEFAULT(Connection.TRANSACTION_REPEATABLE_READ),
+
     /**
      * 不支持事务。使用这个级别时，数据库操作不会受到事务管理
      */
@@ -29,7 +31,7 @@ public enum TransactionIsolationLevel {
     READ_COMMITTED(Connection.TRANSACTION_READ_COMMITTED),
 
     /**
-     * 指示防止脏读取和不可重复读取;可能会发生幻像读取。
+     * 指示防止脏读取和不可重复读取;可能会发生幻像读取。(JDBC默认)
      * 此级别禁止事务读取包含未提交更改的行。
      * 并且还禁止一个事务读取一行，第二个事务更改该行，
      * 第一个事务重新读取该行，第二次获得不同的值（“不可重复读取”）。
