@@ -1,10 +1,8 @@
 package com.jvyou.mybatis.builder;
 
 import cn.hutool.core.util.ClassUtil;
-import com.jvyou.mybatis.annotations.Delete;
-import com.jvyou.mybatis.annotations.Insert;
-import com.jvyou.mybatis.annotations.Select;
-import com.jvyou.mybatis.annotations.Update;
+import com.jvyou.mybatis.annotations.*;
+import com.jvyou.mybatis.cache.Cache;
 import com.jvyou.mybatis.datasource.PooledDataSource;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.mapping.SqlCommandType;
@@ -46,6 +44,10 @@ public class XMLConfigBuilder {
 
         Set<Class<?>> classes = ClassUtil.scanPackage("com.jvyou.mybatis.mapper");
         for (Class<?> aClass : classes) {
+            // 是否二级缓存
+            boolean isCache = aClass.isAnnotationPresent(CacheNamespace.class);
+            Cache cache = isCache ? configuration.getCache(aClass.getName()) : null;
+
             Method[] methods = aClass.getMethods();
             for (Method method : methods) {
                 String originalSql = "";
@@ -82,6 +84,7 @@ public class XMLConfigBuilder {
                         .resultType(returnType)
                         .isSelectMany(isSelectMany)
                         .sqlCommandType(sqlCommandType)
+                        .cache(cache)
                         .build();
                 configuration.addMappedStatement(mappedStatement);
             }

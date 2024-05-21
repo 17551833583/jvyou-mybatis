@@ -1,6 +1,6 @@
 package com.jvyou.mybatis.plugin;
 
-import com.jvyou.mybatis.executor.SqlExecutor;
+import com.jvyou.mybatis.executor.Executor;
 import com.jvyou.mybatis.mapping.MappedStatement;
 
 import java.util.Properties;
@@ -12,7 +12,7 @@ import java.util.Properties;
  * @Description 分页插件
  */
 @Intercepts({
-        @Signature(type = SqlExecutor.class, method = "query", args = {MappedStatement.class, Object.class}),
+        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class}),
 })
 public class LimitPlugin implements PluginInterceptor {
 

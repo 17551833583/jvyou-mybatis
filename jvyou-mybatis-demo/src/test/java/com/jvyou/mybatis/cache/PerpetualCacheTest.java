@@ -35,6 +35,19 @@ public class PerpetualCacheTest {
     }
 
     @Test
+    void testUpdate2() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        System.out.println(userMapper.getList("jvyou", 1));
+        System.out.println(userMapper.getList("jvyou", 1));
+        SqlSession sqlSession1 = sqlSessionFactory.openSession(false);
+        UserMapper userMapper1 = sqlSession1.getMapper(UserMapper.class);
+        userMapper1.update(1, "jvyou", 22);
+        sqlSession1.commit();
+        System.out.println(userMapper1.getList("jvyou", 1));
+    }
+
+    @Test
     void testLocalCache() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
@@ -45,6 +58,12 @@ public class PerpetualCacheTest {
         UserMapper userMapper1 = sqlSession1.getMapper(UserMapper.class);
         System.out.println(userMapper1.getList("jvyou", 1));
     }
-
+    @Test
+    void testLocalCache2() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+        System.out.println(userMapper.getList("jvyou", 1));
+        System.out.println(userMapper.getList("jvyou", 2));
+    }
 
 }

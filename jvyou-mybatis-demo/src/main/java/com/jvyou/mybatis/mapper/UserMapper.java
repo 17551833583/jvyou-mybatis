@@ -12,6 +12,7 @@ import java.util.List;
  * @Date 2024/4/25 20:12
  * @Description
  */
+@CacheNamespace
 public interface UserMapper {
 
     @Select("select * from t_user where id=#{id} and name=#{name}")

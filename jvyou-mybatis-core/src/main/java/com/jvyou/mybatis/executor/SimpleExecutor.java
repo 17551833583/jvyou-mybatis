@@ -18,7 +18,7 @@ import java.util.List;
  * @Date 2024/4/28 17:43
  * @Description 简单 SQL 执行器
  */
-public class SimpleSqlExecutor implements SqlExecutor {
+public class SimpleExecutor implements Executor {
 
     private final Configuration configuration;
 
@@ -30,7 +30,7 @@ public class SimpleSqlExecutor implements SqlExecutor {
      */
     private final Cache loaclCache;
 
-    public SimpleSqlExecutor(Configuration configuration, Transaction transaction) {
+    public SimpleExecutor(Configuration configuration, Transaction transaction) {
         this.configuration = configuration;
         this.transaction = transaction;
         this.loaclCache = new PerpetualCache("LocalCache");

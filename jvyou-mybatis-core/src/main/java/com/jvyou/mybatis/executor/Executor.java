@@ -11,7 +11,7 @@ import java.util.List;
  * @Date 2024/4/28 17:40
  * @Description SQL 执行器
  */
-public interface SqlExecutor {
+public interface Executor {
 
     /**
      * 执行查询
@@ -36,17 +36,15 @@ public interface SqlExecutor {
      * 提交事务
      *
      * @param required 是否强制提交提交
-     * @throws SQLException SQL异常
      */
-    void commit(boolean required) throws SQLException;
+    void commit(boolean required) ;
 
     /**
      * 回滚事务
      *
      * @param required 是否强制回滚
-     * @throws SQLException SQL异常
      */
-    void rollback(boolean required) throws SQLException;
+    void rollback(boolean required) ;
 
     void close();
 }

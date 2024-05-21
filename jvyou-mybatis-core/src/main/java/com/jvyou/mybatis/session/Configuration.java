@@ -1,7 +1,10 @@
 package com.jvyou.mybatis.session;
 
-import com.jvyou.mybatis.executor.SimpleSqlExecutor;
-import com.jvyou.mybatis.executor.SqlExecutor;
+import com.jvyou.mybatis.cache.Cache;
+import com.jvyou.mybatis.cache.PerpetualCache;
+import com.jvyou.mybatis.executor.CachingExecutor;
+import com.jvyou.mybatis.executor.Executor;
+import com.jvyou.mybatis.executor.SimpleExecutor;
 import com.jvyou.mybatis.executor.parameter.DefaultParameterHandler;
 import com.jvyou.mybatis.executor.parameter.ParameterHandler;
 import com.jvyou.mybatis.executor.resultset.DefaultResultSetHandler;
@@ -14,8 +17,8 @@ import com.jvyou.mybatis.plugin.LimitPlugin;
 import com.jvyou.mybatis.plugin.SqlLogPlugin;
 import com.jvyou.mybatis.transaction.Transaction;
 import com.jvyou.mybatis.type.IntegerHandler;
-import com.jvyou.mybatis.type.TypeHandler;
 import com.jvyou.mybatis.type.StringHandler;
+import com.jvyou.mybatis.type.TypeHandler;
 import lombok.Data;
 
 import javax.sql.DataSource;
@@ -38,7 +41,10 @@ public class Configuration {
     private final Map<Class, TypeHandler> paramTypeHandlerMap = new HashMap<>();
     // 责任链
     private InterceptorChain interceptorChain = new InterceptorChain();
-
+    // 二级缓存，默认开启二级缓存
+    protected boolean cacheEnabled = true;
+    // 缓存 Map
+    protected final Map<String, Cache> caches = new HashMap<>();
     //数据源
     private DataSource dataSource;
 
@@ -97,8 +103,13 @@ public class Configuration {
      *
      * @return 返回包装后的 SqlExecutor 对象。
      */
-    public SqlExecutor newSqlExecutor(Transaction transaction) {
-        return interceptorChain.wrap(new SimpleSqlExecutor(this,transaction));
+    public Executor newSqlExecutor(Transaction transaction) {
+        SimpleExecutor executor = new SimpleExecutor(this, transaction);
+        if (!cacheEnabled) {
+            return interceptorChain.wrap(executor);
+        }
+        // 默认是支持二级缓存的
+        return interceptorChain.wrap(new CachingExecutor(executor));
     }
 
     public ResultSetHandler newResultSetHandler() {
@@ -113,4 +124,13 @@ public class Configuration {
         return interceptorChain.wrap(new PreparedStatementHandler(this, ms, parameter));
     }
 
+    /**
+     * 获取缓存
+     *
+     * @param id 缓存ID
+     * @return 缓存
+     */
+    public Cache getCache(String id) {
+        return caches.computeIfAbsent(id, k -> new PerpetualCache(id));
+    }
 }

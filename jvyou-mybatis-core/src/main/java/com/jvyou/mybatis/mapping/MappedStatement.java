@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.mapping;
 
+import com.jvyou.mybatis.cache.Cache;
 import com.jvyou.mybatis.constant.SQLKeyword;
 import com.jvyou.mybatis.parser.GenericTokenParser;
 import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
@@ -43,7 +44,10 @@ public class MappedStatement implements SQLKeyword {
      * 是否是查询多条记录
      */
     private boolean isSelectMany;
-
+    /**
+     * 二级缓存
+     */
+    private Cache cache;
     /**
      * 获取 BoundSql
      *

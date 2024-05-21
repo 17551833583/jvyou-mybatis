@@ -54,6 +54,7 @@ public class PreparedStatementHandler implements StatementHandler {
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T query(Statement statement) {
         PreparedStatement ps = (PreparedStatement) statement;

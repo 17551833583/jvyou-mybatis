@@ -2,7 +2,7 @@ package com.jvyou.mybatis.session.defaults;
 
 import com.jvyou.mybatis.binding.MapperProxyFactory;
 import com.jvyou.mybatis.exception.TooManyResultsException;
-import com.jvyou.mybatis.executor.SqlExecutor;
+import com.jvyou.mybatis.executor.Executor;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.session.SqlSession;
@@ -19,29 +19,29 @@ import java.util.List;
 public class DefaultSqlSession implements SqlSession {
 
     private final Configuration configuration;
-    private final SqlExecutor sqlExecutor;
+    private final Executor executor;
 
-    public DefaultSqlSession(Configuration configuration, SqlExecutor sqlExecutor) {
+    public DefaultSqlSession(Configuration configuration, Executor executor) {
         this.configuration = configuration;
-        this.sqlExecutor = sqlExecutor;
+        this.executor = executor;
     }
 
     @Override
     public int insert(String statementId, Object parameter) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statementId);
-        return sqlExecutor.update(mappedStatement, parameter);
+        return executor.update(mappedStatement, parameter);
     }
 
     @Override
     public int update(String statementId, Object parameter) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statementId);
-        return sqlExecutor.update(mappedStatement, parameter);
+        return executor.update(mappedStatement, parameter);
     }
 
     @Override
     public int delete(String statementId, Object parameter) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statementId);
-        return sqlExecutor.update(mappedStatement, parameter);
+        return executor.update(mappedStatement, parameter);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DefaultSqlSession implements SqlSession {
     @Override
     public <T> List<T> selectList(String statementId, Object parameter) {
         MappedStatement mappedStatement = configuration.getMappedStatement(statementId);
-        return sqlExecutor.query(mappedStatement, parameter);
+        return executor.query(mappedStatement, parameter);
     }
 
     @Override
@@ -73,19 +73,19 @@ public class DefaultSqlSession implements SqlSession {
 
     @Override
     public void close() {
-        sqlExecutor.close();
+        executor.close();
     }
 
     @SneakyThrows
     @Override
     public void commit() {
-        sqlExecutor.commit(false);
+        executor.commit(false);
     }
 
     @SneakyThrows
     @Override
     public void rollback() {
-        sqlExecutor.rollback(false);
+        executor.rollback(false);
     }
 
     @Override
