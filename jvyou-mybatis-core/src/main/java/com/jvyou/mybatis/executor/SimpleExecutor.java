@@ -40,6 +40,7 @@ public class SimpleExecutor implements Executor {
     @SuppressWarnings("unchecked")
     @Override
     public <T> List<T> query(MappedStatement ms, Object parameter) {
+
         String cacheKey = ms.getCacheKey(parameter);
         Object list = loaclCache.getObject(cacheKey);
         if (list != null) {
@@ -50,7 +51,13 @@ public class SimpleExecutor implements Executor {
         Statement statement = getStatement(statementHandler);
         List<T> result = statementHandler.query(statement);
         statement.close();
-        loaclCache.putObject(cacheKey, result);
+
+        // 二级缓存为空的话就才走一级缓存了
+        Cache cache = ms.getCache();
+        if (cache == null) {
+            loaclCache.putObject(cacheKey, result);
+        }
+
         return result;
     }
 
