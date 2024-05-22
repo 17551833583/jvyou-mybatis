@@ -36,16 +36,24 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+        </dependency>
         <!--mybatis坐标-->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.4.5</version>
         </dependency>
-
         <dependency>
             <groupId>com.jvyou</groupId>
             <artifactId>jvyou-mybatis-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
         </dependency>
         
     </dependencies>

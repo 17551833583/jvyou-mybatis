@@ -26,6 +26,7 @@
         <cglib.version>3.3.0</cglib.version>
         <dom4j.version>1.6.1</dom4j.version>
         <gaxen.version>1.2.0</gaxen.version>
+        <ognl.version>2.3.2</ognl.version>
     </properties>
 
     <dependencyManagement>
@@ -85,6 +86,14 @@
                 <groupId>cglib</groupId>
                 <artifactId>cglib</artifactId>
                 <version>${cglib.version}</version>
+            </dependency>
+
+            <!-- OGNL 表达式-->
+            <!-- https://mvnrepository.com/artifact/ognl/ognl -->
+            <dependency>
+                <groupId>ognl</groupId>
+                <artifactId>ognl</artifactId>
+                <version>${ognl.version}</version>
             </dependency>
 
             <!-- 解析xml -->

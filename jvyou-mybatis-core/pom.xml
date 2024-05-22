@@ -64,7 +64,11 @@
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
         </dependency>
-
+        <!--OGNL-->
+        <dependency>
+            <groupId>ognl</groupId>
+            <artifactId>ognl</artifactId>
+        </dependency>
         <!-- 解析xml -->
         <dependency>
             <groupId>dom4j</groupId>
