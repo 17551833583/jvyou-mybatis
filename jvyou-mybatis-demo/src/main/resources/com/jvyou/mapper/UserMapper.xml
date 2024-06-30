@@ -21,7 +21,6 @@
             age  = #{age}
         where id = #{id};
     </update>
-    <update id="updateByUserVo"></update>
     <delete id="delete">
         delete
         from t_user
@@ -43,5 +42,18 @@
         select count(*)
         from t_user;
     </select>
-    <select id="getList" resultType="com.jvyou.mybatis.entity.User"></select>
+    <select id="findOne" resultType="com.jvyou.mybatis.entity.User">
+        select * from t_user
+        <where>
+            <if test="id != null">
+                and id = #{id}
+                <if test="1=1">
+                    and 1+1
+                </if>
+            </if>
+            <if test="name != null">
+                and name = #{name}
+            </if>
+        </where>
+    </select>
 </mapper>

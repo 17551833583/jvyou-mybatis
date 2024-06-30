@@ -45,4 +45,6 @@ public interface UserMapper {
     @Delete("delete from t_user where id=#{id}")
     boolean delete(@Param("id") Integer id);
 
+    User findOne(Integer id, String name);
+
 }
