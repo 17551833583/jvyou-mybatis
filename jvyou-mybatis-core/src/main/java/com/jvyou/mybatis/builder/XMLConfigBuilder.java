@@ -44,8 +44,8 @@ public class XMLConfigBuilder {
 
         Set<Class<?>> classes = ClassUtil.scanPackage("com.jvyou.mybatis.mapper");
         for (Class<?> aClass : classes) {
-            // 是否二级缓存
-            boolean isCache = aClass.isAnnotationPresent(CacheNamespace.class);
+            // 判断configuration是否默认开启二级缓存，如果不开启，还要判断 Mapper 是否有CacheNamespace.class注解
+            boolean isCache = configuration.isCacheEnabled() ? true : aClass.isAnnotationPresent(CacheNamespace.class);
             Cache cache = isCache ? configuration.getCache(aClass.getName()) : null;
 
             Method[] methods = aClass.getMethods();

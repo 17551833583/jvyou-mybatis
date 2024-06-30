@@ -23,6 +23,8 @@ public class DefaultParameterHandler implements ParameterHandler {
         this.configuration = configuration;
     }
 
+
+    @SuppressWarnings("unchecked")
     @Override
     public void setParameters(PreparedStatement ps, List<String> paramNames, Object parameter) {
         // Mapper 代理方法传递过来的真实参数，key值为 Param 注解 value 的值

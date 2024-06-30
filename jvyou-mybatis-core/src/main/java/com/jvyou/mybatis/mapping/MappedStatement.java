@@ -45,9 +45,10 @@ public class MappedStatement implements SQLKeyword {
      */
     private boolean isSelectMany;
     /**
-     * 二级缓存
+     * 二级缓存,二级缓存是存放在 Configuration 对象的 caches Map集合当中的，键值为 Mapper 的全限定类名，值则是 Cache 对象，同一个 Mapper 的二级缓存是共享的
      */
     private Cache cache;
+
     /**
      * 获取 BoundSql
      *

@@ -27,12 +27,7 @@ public class TestMybatis {
         //获取SqlSession对象
         SqlSession sqlSession=sessionFactory.openSession();
 
-        sqlSession.select("com.jvyou.mybatis.mapper.UserMapper.getAll", "jvyou", new ResultHandler() {
-            @Override
-            public void handleResult(ResultContext resultContext) {
-                System.out.println(resultContext.getResultObject());
-            }
-        });
+        sqlSession.select("com.jvyou.mybatis.mapper.UserMapper.getAll", "jvyou", resultContext -> System.out.println(resultContext.getResultObject()));
 
         UserMapper mapper=sqlSession.getMapper(UserMapper.class);
         //执行Sql语句

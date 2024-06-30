@@ -5,7 +5,6 @@ import com.jvyou.mybatis.cache.Cache;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import lombok.SneakyThrows;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -16,6 +15,10 @@ import java.util.List;
  */
 public class CachingExecutor implements Executor {
 
+    /**
+     * 委托执行器，原始的数据库操作还是委托执行器进行执行的
+     * 经过CachingExecutor包装之后的执行器会判断是否支持二级缓存，支持二级缓存，CachingExecutor 会在原始的执行器中操作中装饰对缓存的操作
+     */
     private final Executor delegate;
 
     public CachingExecutor(Executor delegate) {
@@ -61,7 +64,7 @@ public class CachingExecutor implements Executor {
 
     @SneakyThrows
     @Override
-    public void rollback(boolean required)  {
+    public void rollback(boolean required) {
         delegate.rollback(required);
     }
 
