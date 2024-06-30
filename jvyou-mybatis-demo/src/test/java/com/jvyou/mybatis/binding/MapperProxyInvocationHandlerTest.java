@@ -36,6 +36,8 @@ public class MapperProxyInvocationHandlerTest {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
         List<User> users = userMapper.getAll();
         System.out.println(JSONUtil.toJsonStr(users));
+        List<User> users2 = userMapper.getAll();
+        System.out.println(JSONUtil.toJsonStr(users2));
     }
 
 

@@ -35,11 +35,13 @@ public class CachingExecutor implements Executor {
             Object cacheResult = cache.getObject(key);
             // 缓存中有数据直接返回
             if (cacheResult != null) {
+                System.err.println("二级缓存开启,结果命中二级缓存");
                 return (List<T>) cacheResult;
             }
             // 缓存中不存在则查询数据库或者一级缓存，查询结果存储在二级缓存里面
             List<Object> queryResult = delegate.query(ms, parameter);
             cache.putObject(key, queryResult);
+            System.err.println("二级缓存开启,结果未命中二级缓存，查询数据库");
             return (List<T>) queryResult;
         }
         // 缓存不存在，说明不支持二级缓存，走数据库查询或者一级缓存

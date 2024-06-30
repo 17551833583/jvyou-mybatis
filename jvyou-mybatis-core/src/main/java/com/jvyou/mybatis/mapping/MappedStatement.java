@@ -15,7 +15,7 @@ import java.util.List;
  * @author 橘柚
  * @version 1.0-SNAPSHOT
  * @Date 2024/4/27 20:12
- * @Description Mapper 配置信息
+ * @Description 经过解析的 SQL 陈述语句
  */
 @Data
 @SuperBuilder

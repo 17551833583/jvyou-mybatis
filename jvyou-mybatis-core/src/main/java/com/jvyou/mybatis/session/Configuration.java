@@ -42,7 +42,7 @@ public class Configuration {
     // 责任链
     private InterceptorChain interceptorChain = new InterceptorChain();
     // 二级缓存，默认开启二级缓存
-    protected boolean cacheEnabled = true;
+    protected boolean cacheEnabled = false;
     // 缓存 Map
     protected final Map<String, Cache> caches = new HashMap<>();
     //数据源
@@ -105,10 +105,8 @@ public class Configuration {
      */
     public Executor newSqlExecutor(Transaction transaction) {
         SimpleExecutor executor = new SimpleExecutor(this, transaction);
-        if (!cacheEnabled) {
-            return interceptorChain.wrap(executor);
-        }
-        // 默认是支持二级缓存的
+        // 统一通过 CachingExecutor 对执行器进行装饰，在解析 Configuration对象中存在了是否开启二级缓存
+        // 并包装了 MappedStatement 的缓存对象，CachingExecutor 里面会通过对 MS 的缓存对象是否存在进行判断是否走二级缓存
         return interceptorChain.wrap(new CachingExecutor(executor));
     }
 
@@ -120,6 +118,13 @@ public class Configuration {
         return interceptorChain.wrap(new DefaultParameterHandler(this));
     }
 
+    /**
+     * 新建陈述语句处理器都对象，语句处理器被拦截器责任链进行代理包装
+     *
+     * @param ms        MappedStatement
+     * @param parameter 参数对象
+     * @return 陈述语句处理器
+     */
     public StatementHandler newStatementHandler(MappedStatement ms, Object parameter) {
         return interceptorChain.wrap(new PreparedStatementHandler(this, ms, parameter));
     }
