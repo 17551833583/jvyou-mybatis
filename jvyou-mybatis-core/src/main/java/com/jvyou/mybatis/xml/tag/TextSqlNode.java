@@ -6,5 +6,9 @@ package com.jvyou.mybatis.xml.tag;
  * @Date 2024/7/1 1:13
  * @Description 文本元素
  */
-public class TextElement {
+public class TextSqlNode implements SqlNode {
+    @Override
+    public void apply(Object context) {
+
+    }
 }

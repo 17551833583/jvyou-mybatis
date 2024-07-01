@@ -6,5 +6,9 @@ package com.jvyou.mybatis.xml.tag;
  * @Date 2024/7/1 1:12
  * @Description where标签
  */
-public class WhereElement {
+public class WhereSqlNode implements SqlNode {
+    @Override
+    public void apply(Object context) {
+
+    }
 }
