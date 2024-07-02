@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.xml;
 
+import com.jvyou.mybatis.xml.tag.*;
 import lombok.SneakyThrows;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -10,6 +11,7 @@ import org.xml.sax.InputSource;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,30 +58,52 @@ public class XmlParseTest {
             String resultType = element.attributeValue("resultType");
             System.out.println("id:" + id);
             System.out.println("resultType:" + resultType);
-            // 主SQL语句和下面的子标签都是 Node
-            List<Node> childrenNodes = element.content();
-            for (Node childrenNode : childrenNodes) {
-                parseXml(childrenNode);
-            }
+            MixedSqlNode mixedSqlNode = parseXml(element);
+
+            DynamicContext dynamicContext = new DynamicContext();
+            dynamicContext.bind("id", 1);
+            dynamicContext.bind("name", "jvyou");
+            dynamicContext.bind("age", 18);
+            mixedSqlNode.apply(dynamicContext);
+            System.out.println(dynamicContext.getSql());
+            System.out.println("==============");
         }
         System.out.println("耗时：" + (System.currentTimeMillis() - currentTimeMillis));
     }
 
 
-    public void parseXml(Node node) {
-        if (node.getNodeType() == Node.TEXT_NODE) {
-            if (node.getText().trim().length() != 0) {
-                System.out.println("SQL:" + node.getText().trim());
+    public MixedSqlNode parseXml(Element element) {
+        // 主SQL语句和下面的子标签都是 Node
+        List<Node> childrenNodes = element.content();
+        List<SqlNode> sqlNodes = new ArrayList<>();
+
+        for (Node childNode : childrenNodes) {
+            SqlNode sqlNode = null;
+            if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element childElement = (Element) childNode;
+                String nodeName = childElement.getName();
+                if (nodeName.equals("if")) {
+                    String test = childElement.attributeValue("test");
+                    if (test == null) {
+                        throw new RuntimeException("if标签的test属性不能为空");
+                    }
+                    sqlNode = new IfSqlNode(test, parseXml(childElement));
+                } else if (nodeName.equals("where")) {
+                    sqlNode = new WhereSqlNode(parseXml(childElement));
+                }
+
+            } else {
+                String sql = childNode.getText().trim();
+                if (sql.length() != 0) {
+                    sqlNode = new TextSqlNode(sql);
+                }
             }
-        } else if (node.getNodeType() == Node.ELEMENT_NODE) {
-            Element element = (Element) node;
-            String test = element.attributeValue("test");
-            if (test != null) {
-                System.out.println("test:" + test);
+            if (sqlNode != null) {
+                sqlNodes.add(sqlNode);
             }
-            List<Node> nodes = element.content();
-            nodes.forEach(this::parseXml);
         }
+
+        return new MixedSqlNode(sqlNodes);
     }
 
 }

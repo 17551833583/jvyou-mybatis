@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.xml.tag;
 
+import com.jvyou.mybatis.xml.DynamicContext;
+
 import java.util.Map;
 
 /**
@@ -16,6 +18,6 @@ public interface SqlNode {
      *
      * @param context OGNL上下文环境
      */
-    void apply(Object context);
+    void apply(DynamicContext context);
 
 }

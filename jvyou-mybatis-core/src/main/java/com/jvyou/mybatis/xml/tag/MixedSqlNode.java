@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.xml.tag;
 
+import com.jvyou.mybatis.xml.DynamicContext;
+
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ public class MixedSqlNode implements SqlNode{
     }
 
     @Override
-    public void apply(Object context) {
+    public void apply(DynamicContext context) {
         for (SqlNode sqlNode : sqlNodes) {
             sqlNode.apply(context);
         }

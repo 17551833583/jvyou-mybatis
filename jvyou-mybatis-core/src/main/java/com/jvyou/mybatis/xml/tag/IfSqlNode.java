@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.xml.tag;
 
+import com.jvyou.mybatis.xml.DynamicContext;
 import lombok.SneakyThrows;
 import ognl.Ognl;
 
@@ -14,12 +15,12 @@ public class IfSqlNode implements SqlNode {
     /**
      * if语句的判断条件
      */
-    private String test;
+    private final String test;
 
     /**
      * if语句的子节点
      */
-    private SqlNode sqlNode;
+    private final SqlNode sqlNode;
 
     public IfSqlNode(String test, SqlNode sqlNode) {
         this.test = test;
@@ -28,9 +29,9 @@ public class IfSqlNode implements SqlNode {
 
     @SneakyThrows
     @Override
-    public void apply(Object context) {
+    public void apply(DynamicContext context) {
         // test 条件是否成立
-        Boolean value = (Boolean) Ognl.getValue(test, context);
+        Boolean value = (Boolean) Ognl.getValue(test, context.getBindings());
         if (value) {
             sqlNode.apply(context);
         }

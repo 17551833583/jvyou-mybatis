@@ -1,5 +1,7 @@
 package com.jvyou.mybatis.xml.tag;
 
+import com.jvyou.mybatis.xml.DynamicContext;
+
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
@@ -7,8 +9,15 @@ package com.jvyou.mybatis.xml.tag;
  * @Description 文本元素
  */
 public class TextSqlNode implements SqlNode {
-    @Override
-    public void apply(Object context) {
 
+    private final String text;
+
+    public TextSqlNode(String text) {
+        this.text = text;
+    }
+
+    @Override
+    public void apply(DynamicContext context) {
+        context.appendSql(text);
     }
 }
