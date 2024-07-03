@@ -4,6 +4,7 @@ import com.jvyou.mybatis.cache.Cache;
 import com.jvyou.mybatis.constant.SQLKeyword;
 import com.jvyou.mybatis.parser.GenericTokenParser;
 import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
+import com.jvyou.mybatis.xml.tag.SqlNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,11 +51,17 @@ public class MappedStatement implements SQLKeyword {
     private Cache cache;
 
     /**
+     * SQL 动态节点
+     */
+    private SqlNode sqlSource;
+
+    /**
      * 获取 BoundSql
      *
      * @return 携带解析后的SQL和参数名称列表的 BoundSql 对象
      */
     public BoundSql getBoundSql() {
+
         // 解析 SQL
         ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();
         GenericTokenParser genericTokenParser = new GenericTokenParser(SQL_OPEN_TOKEN, SQL_CLOSE_TOKEN, tokenHandler);

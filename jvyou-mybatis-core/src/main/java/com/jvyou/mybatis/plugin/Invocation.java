@@ -32,7 +32,6 @@ public class Invocation {
      * 调用方法
      *
      * @return 方法调用结果
-     * @throws Exception 方法调用异常
      */
     @SneakyThrows
     public Object proceed()  {

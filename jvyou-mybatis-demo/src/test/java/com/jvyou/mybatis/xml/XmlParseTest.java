@@ -1,17 +1,24 @@
 package com.jvyou.mybatis.xml;
 
+import com.jvyou.mybatis.builder.XMLScanner;
 import com.jvyou.mybatis.xml.tag.*;
 import lombok.SneakyThrows;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.net.URL;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -60,7 +67,7 @@ public class XmlParseTest {
             System.out.println("resultType:" + resultType);
             MixedSqlNode mixedSqlNode = parseXml(element);
 
-            DynamicContext dynamicContext = new DynamicContext();
+            DynamicContext dynamicContext = new DynamicContext(new HashMap<>());
             dynamicContext.bind("id", 1);
             dynamicContext.bind("name", "jvyou");
             dynamicContext.bind("age", 18);
@@ -91,19 +98,36 @@ public class XmlParseTest {
                 } else if (nodeName.equals("where")) {
                     sqlNode = new WhereSqlNode(parseXml(childElement));
                 }
-
             } else {
                 String sql = childNode.getText().trim();
                 if (sql.length() != 0) {
-                    sqlNode = new TextSqlNode(sql);
+                    sqlNode = new StaticTextSqlNode(sql);
                 }
             }
             if (sqlNode != null) {
                 sqlNodes.add(sqlNode);
             }
         }
-
         return new MixedSqlNode(sqlNodes);
     }
+
+    @Test
+    @SneakyThrows
+    void testPath() {
+
+        List<InputStream> inputStreams = XMLScanner.scanXMLFilesFromResource("com/jvyou/mapper");
+        inputStreams.forEach(inputStream -> {
+            SAXReader saxReader = new SAXReader();
+            try {
+                Document document = saxReader.read(inputStream);
+                Element rootElement = document.getRootElement();
+                System.out.println(rootElement.getName());
+            } catch (DocumentException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+
 
 }

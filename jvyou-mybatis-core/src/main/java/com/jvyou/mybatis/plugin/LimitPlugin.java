@@ -20,9 +20,8 @@ public class LimitPlugin implements PluginInterceptor {
     @Override
     public Object intercept(Invocation invocation) {
         MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
-        String sql = ms.getSql();
-        if (!sql.contains("limit")) {
-            ms.setSql(sql + " limit 0,2");
+        if (ms.isSelectMany() && !ms.getSql().contains("limit")) {
+            ms.setSql(ms.getSql() + " limit 0,2");
         }
         return invocation.proceed();
     }

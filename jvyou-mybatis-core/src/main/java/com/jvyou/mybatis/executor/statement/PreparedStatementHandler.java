@@ -5,11 +5,13 @@ import com.jvyou.mybatis.executor.resultset.ResultSetHandler;
 import com.jvyou.mybatis.mapping.BoundSql;
 import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.session.Configuration;
+import com.jvyou.mybatis.xml.DynamicContext;
 import lombok.SneakyThrows;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Map;
 
 /**
  * @author 橘柚
@@ -25,7 +27,7 @@ public class PreparedStatementHandler implements StatementHandler {
 
     private final Object parameter;
 
-    private final BoundSql boundSql;
+    private BoundSql boundSql;
 
     private final ParameterHandler parameterHandler;
 
@@ -68,5 +70,17 @@ public class PreparedStatementHandler implements StatementHandler {
         PreparedStatement ps = (PreparedStatement) statement;
         ps.execute();
         return ps.getUpdateCount();
+    }
+
+    public BoundSql getBoundSql() {
+        return boundSql;
+    }
+
+    public void setBoundSql(BoundSql boundSql) {
+        this.boundSql = boundSql;
+    }
+
+    public MappedStatement getMs() {
+        return ms;
     }
 }

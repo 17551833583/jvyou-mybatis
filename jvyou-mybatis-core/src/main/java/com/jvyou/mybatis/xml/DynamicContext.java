@@ -13,7 +13,11 @@ public class DynamicContext {
 
     private final StringBuilder sqlBuilder = new StringBuilder();
 
-    private final Map<String, Object> bindings = new HashMap<>();
+    private final Map<String, Object> bindings ;
+
+    public DynamicContext(Map<String, Object> bindings) {
+        this.bindings = bindings;
+    }
 
     public String getSql() {
         return sqlBuilder.toString();

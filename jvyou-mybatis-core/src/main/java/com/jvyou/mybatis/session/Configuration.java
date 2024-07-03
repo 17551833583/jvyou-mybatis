@@ -16,9 +16,7 @@ import com.jvyou.mybatis.plugin.InterceptorChain;
 import com.jvyou.mybatis.plugin.LimitPlugin;
 import com.jvyou.mybatis.plugin.SqlLogPlugin;
 import com.jvyou.mybatis.transaction.Transaction;
-import com.jvyou.mybatis.type.IntegerHandler;
-import com.jvyou.mybatis.type.StringHandler;
-import com.jvyou.mybatis.type.TypeHandler;
+import com.jvyou.mybatis.type.*;
 import lombok.Data;
 
 import javax.sql.DataSource;
@@ -52,6 +50,9 @@ public class Configuration {
         // 添加默认的类型处理器
         paramTypeHandlerMap.put(String.class, new StringHandler());
         paramTypeHandlerMap.put(Integer.class, new IntegerHandler());
+        paramTypeHandlerMap.put(Long.class, new LongHandler());
+        paramTypeHandlerMap.put(Double.class, new DoubleHandler());
+
         // 添加默认的插件拦截器
         interceptorChain.addInterceptor(new SqlLogPlugin());
         interceptorChain.addInterceptor(new LimitPlugin());

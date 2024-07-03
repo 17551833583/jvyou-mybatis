@@ -7,6 +7,7 @@ import com.jvyou.mybatis.mapping.MappedStatement;
 import com.jvyou.mybatis.mapping.SqlCommandType;
 import com.jvyou.mybatis.session.Configuration;
 import com.jvyou.mybatis.session.SqlSession;
+import com.jvyou.mybatis.xml.DynamicContext;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -49,6 +50,15 @@ public class MapperProxyInvocationHandler implements InvocationHandler, SQLKeywo
 
         Configuration configuration = sqlSession.getConfiguration();
         MappedStatement ms = configuration.getMappedStatement(mapperClass.getName() + "." + method.getName());
+        // 动态节点不为空，需要解析动态SQL
+        if (ms.getSqlSource() != null && (ms.getSql() == null || ms.getSql().trim().length() == 0)) {
+            DynamicContext context = new DynamicContext((Map<String, Object>) paramMap);
+            ms.getSqlSource().apply(context);
+            String sql = context.getSql()
+                    .replace("\n", " ")  // 移除换行符
+                    .replaceAll("\\s+", " "); // 移除多余的空格
+            ms.setSql(sql);
+        }
         SqlCommandType sqlCommandType = ms.getSqlCommandType();
         Class<?> resultType = ms.getResultType();
 

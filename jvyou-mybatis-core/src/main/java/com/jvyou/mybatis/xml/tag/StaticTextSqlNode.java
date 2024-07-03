@@ -8,11 +8,11 @@ import com.jvyou.mybatis.xml.DynamicContext;
  * @Date 2024/7/1 1:13
  * @Description 文本元素
  */
-public class TextSqlNode implements SqlNode {
+public class StaticTextSqlNode implements SqlNode {
 
     private final String text;
 
-    public TextSqlNode(String text) {
+    public StaticTextSqlNode(String text) {
         this.text = text;
     }
 
