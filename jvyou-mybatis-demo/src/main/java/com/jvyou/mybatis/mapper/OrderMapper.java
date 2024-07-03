@@ -1,5 +1,6 @@
 package com.jvyou.mybatis.mapper;
 
+import com.jvyou.mybatis.annotations.Param;
 import com.jvyou.mybatis.entity.Order;
 
 import java.util.List;
@@ -13,5 +14,8 @@ import java.util.List;
 public interface OrderMapper {
 
     List<Order> getList();
+
+
+    Order getById(@Param("id") Integer id);
 
 }

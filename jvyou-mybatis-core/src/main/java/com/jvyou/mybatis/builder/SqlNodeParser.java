@@ -36,7 +36,12 @@ public class SqlNodeParser {
                 }
             } else {
                 String sql = childNode.getText().trim();
-                if (sql.length() != 0) {
+                if (sql.length() == 0) {
+                    continue;
+                }
+                if (sql.contains("$")) {
+                    sqlNode = new TextSqlNode(sql);
+                } else {
                     sqlNode = new StaticTextSqlNode(sql);
                 }
             }

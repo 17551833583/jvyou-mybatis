@@ -5,4 +5,9 @@
         select *
         from t_order
     </select>
+    <select id="getById" resultType="com.jvyou.mybatis.entity.Order">
+        select *
+        from t_order
+        where id = ${id}
+    </select>
 </mapper>

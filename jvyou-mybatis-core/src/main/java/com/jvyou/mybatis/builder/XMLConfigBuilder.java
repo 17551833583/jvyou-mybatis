@@ -163,7 +163,7 @@ public class XMLConfigBuilder {
                         .id(id)
                         .sql("") // 获取 BoundSql 时会解析 SQL
                         .resultType(resultType)
-                        .isSelectMany(true)
+                        .isSelectMany(false)
                         .sqlSource(mixedSqlNode)
                         .sqlCommandType(sqlCommandType)
                         .cache(null)

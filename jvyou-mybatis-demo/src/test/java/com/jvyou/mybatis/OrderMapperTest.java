@@ -31,4 +31,12 @@ public class OrderMapperTest {
         System.out.println(orders2);
     }
 
+    @Test
+    void testGetById() {
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build();
+        SqlSession session = sqlSessionFactory.openSession();
+        OrderMapper orderMapper = session.getMapper(OrderMapper.class);
+        Order order = orderMapper.getById(1);
+        System.out.println(order);
+    }
 }
