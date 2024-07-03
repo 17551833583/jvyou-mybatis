@@ -24,7 +24,11 @@ public class OrderMapperTest {
         SqlSession session = sqlSessionFactory.openSession();
         OrderMapper orderMapper = session.getMapper(OrderMapper.class);
         List<Order> orders = orderMapper.getList();
+        List<Order> orders1 = orderMapper.getList();
+        List<Order> orders2 = orderMapper.getList();
         System.out.println(orders);
+        System.out.println(orders1);
+        System.out.println(orders2);
     }
 
 }

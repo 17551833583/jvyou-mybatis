@@ -4,6 +4,7 @@ import com.jvyou.mybatis.cache.Cache;
 import com.jvyou.mybatis.constant.SQLKeyword;
 import com.jvyou.mybatis.parser.GenericTokenParser;
 import com.jvyou.mybatis.parser.ParameterMappingTokenHandler;
+import com.jvyou.mybatis.xml.DynamicContext;
 import com.jvyou.mybatis.xml.tag.SqlNode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author 橘柚
@@ -60,7 +62,15 @@ public class MappedStatement implements SQLKeyword {
      *
      * @return 携带解析后的SQL和参数名称列表的 BoundSql 对象
      */
-    public BoundSql getBoundSql() {
+    public BoundSql getBoundSql(Object parameter) {
+        // 动态节点不为空，需要解析动态SQL
+        if (this.sqlSource != null) {
+            DynamicContext context = new DynamicContext((Map<String, Object>) parameter);
+            sqlSource.apply(context);
+            this.sql = context.getSql()
+                    .replace("\n", " ")  // 移除换行符
+                    .replaceAll("\\s+", " "); // 移除多余的空格
+        }
 
         // 解析 SQL
         ParameterMappingTokenHandler tokenHandler = new ParameterMappingTokenHandler();

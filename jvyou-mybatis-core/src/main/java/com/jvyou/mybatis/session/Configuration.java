@@ -39,8 +39,8 @@ public class Configuration {
     private final Map<Class, TypeHandler> paramTypeHandlerMap = new HashMap<>();
     // 责任链
     private InterceptorChain interceptorChain = new InterceptorChain();
-    // 二级缓存，默认开启二级缓存
-    protected boolean cacheEnabled = false;
+    // 全局开启二级缓存
+    protected boolean cacheEnabled = true;
     // 缓存 Map
     protected final Map<String, Cache> caches = new HashMap<>();
     //数据源

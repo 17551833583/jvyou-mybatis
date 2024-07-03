@@ -1,8 +1,9 @@
 package com.jvyou.mybatis.plugin;
 
-import com.jvyou.mybatis.executor.Executor;
-import com.jvyou.mybatis.mapping.MappedStatement;
+import com.jvyou.mybatis.executor.statement.StatementHandler;
+import com.jvyou.mybatis.mapping.BoundSql;
 
+import java.sql.Connection;
 import java.util.Properties;
 
 /**
@@ -12,16 +13,19 @@ import java.util.Properties;
  * @Description 分页插件
  */
 @Intercepts({
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class}),
+        @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class}),
 })
 public class LimitPlugin implements PluginInterceptor {
 
 
     @Override
     public Object intercept(Invocation invocation) {
-        MappedStatement ms = (MappedStatement) invocation.getArgs()[0];
-        if (ms.isSelectMany() && !ms.getSql().contains("limit")) {
-            ms.setSql(ms.getSql() + " limit 0,2");
+        StatementHandler statementHandler = (StatementHandler) invocation.getTarget();
+        BoundSql boundSql = statementHandler.getBoundSql();
+        String sql = boundSql.getParsedSql();
+        if (!sql.contains("limit")) {
+            sql = sql + " limit 0,2";
+            boundSql.setParsedSql(sql.replaceAll("\\s+", " "));
         }
         return invocation.proceed();
     }

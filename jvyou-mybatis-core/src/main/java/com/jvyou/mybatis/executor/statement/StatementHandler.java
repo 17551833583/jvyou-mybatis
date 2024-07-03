@@ -1,5 +1,8 @@
 package com.jvyou.mybatis.executor.statement;
 
+import com.jvyou.mybatis.mapping.BoundSql;
+import com.jvyou.mybatis.mapping.MappedStatement;
+
 import java.sql.Connection;
 import java.sql.Statement;
 
@@ -45,4 +48,17 @@ public interface StatementHandler {
      */
     int update(Statement statement);
 
+    /**
+     * 获取BoundSql对象
+     *
+     * @return BoundSql对象
+     */
+    BoundSql getBoundSql();
+
+    /**
+     * 获取MappedStatement对象
+     *
+     * @return MappedStatement对象
+     */
+    MappedStatement getMs();
 }
