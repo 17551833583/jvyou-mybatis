@@ -5,8 +5,8 @@ import com.jvyou.mybatis.proxy.Marry;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 21:49
- * @Description 婚庆公司
+ * @since 2024/4/25 21:49
+ * ---description 婚庆公司
  */
 public class WeddingCompany implements Marry {
 

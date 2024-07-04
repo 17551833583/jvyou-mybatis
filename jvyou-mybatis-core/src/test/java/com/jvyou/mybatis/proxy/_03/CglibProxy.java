@@ -9,8 +9,8 @@ import java.lang.reflect.Method;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 23:15
- * @Description 创建 Cglib 代理类
+ * @since 2024/4/25 23:15
+ * ---description 创建 Cglib 代理类
  */
 public class CglibProxy implements MethodInterceptor {
 

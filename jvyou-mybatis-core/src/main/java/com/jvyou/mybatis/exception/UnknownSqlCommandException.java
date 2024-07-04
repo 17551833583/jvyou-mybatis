@@ -3,8 +3,8 @@ package com.jvyou.mybatis.exception;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/29 14:30
- * @Description 未知 SQL 命令
+ * @since 2024/4/29 14:30
+ * ---description 未知 SQL 命令
  */
 public class UnknownSqlCommandException extends RuntimeException{
 

@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/1 9:53
- * @Description 混合节点，如何父节点有多个子节点，用于包装子节点
+ * @since 2024/7/1 9:53
+ * ---description 混合节点，如何父节点有多个子节点，用于包装子节点
  */
 public class MixedSqlNode implements SqlNode{
 

@@ -5,8 +5,8 @@ import java.sql.Connection;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/20 13:07
- * @Description 事务隔离级别
+ * @since 2024/5/20 13:07
+ * ---description 事务隔离级别
  */
 public enum TransactionIsolationLevel {
 

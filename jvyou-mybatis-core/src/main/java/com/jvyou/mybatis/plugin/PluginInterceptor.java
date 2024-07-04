@@ -5,8 +5,8 @@ import java.util.Properties;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/30 14:53
- * @Description 插件拦截器
+ * @since 2024/4/30 14:53
+ * ---description 插件拦截器
  */
 public interface PluginInterceptor {
 

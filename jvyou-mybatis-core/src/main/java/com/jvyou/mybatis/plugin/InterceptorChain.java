@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/2 22:13
- * @Description 插件拦截器责任链
+ * @since 2024/5/2 22:13
+ * ---description 插件拦截器责任链
  */
 public class InterceptorChain {
 

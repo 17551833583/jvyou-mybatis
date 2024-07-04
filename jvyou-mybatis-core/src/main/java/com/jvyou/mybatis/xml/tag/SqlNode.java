@@ -7,8 +7,8 @@ import java.util.Map;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/1 9:44
- * @Description SQL语句XML节点
+ * @since 2024/7/1 9:44
+ * ---description SQL语句XML节点
  */
 public interface SqlNode {
 

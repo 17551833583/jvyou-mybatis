@@ -8,8 +8,8 @@ import java.sql.Connection;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/18 21:10
- * @Description 数据库代理连接
+ * @since 2024/5/18 21:10
+ * ---description 数据库代理连接
  */
 public class PooledConnection implements InvocationHandler {
 

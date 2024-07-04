@@ -26,8 +26,8 @@ import java.util.Map;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/27 20:03
- * @Description 核心配置类
+ * @since 2024/4/27 20:03
+ * ---description 核心配置类
  */
 @Data
 public class Configuration {

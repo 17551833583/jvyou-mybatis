@@ -9,8 +9,8 @@ import java.sql.PreparedStatement;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/28 17:21
- * @Description 测试JDBC批量存储
+ * @since 2024/4/28 17:21
+ * ---description 测试JDBC批量存储
  */
 public class TestBatchSave {
 

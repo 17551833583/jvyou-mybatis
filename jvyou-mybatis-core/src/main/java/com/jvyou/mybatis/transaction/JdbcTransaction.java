@@ -9,8 +9,8 @@ import java.sql.Connection;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/19 21:50
- * @Description JDBC事务管理
+ * @since 2024/5/19 21:50
+ * ---description JDBC事务管理
  */
 public class JdbcTransaction implements Transaction {
 

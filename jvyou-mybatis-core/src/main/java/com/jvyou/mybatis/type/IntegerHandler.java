@@ -7,8 +7,8 @@ import java.sql.SQLException;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 16:45
- * @Description Integer 类型参数处理器
+ * @since 2024/4/26 16:45
+ * ---description Integer 类型参数处理器
  */
 public class IntegerHandler implements TypeHandler<Integer> {
     @Override

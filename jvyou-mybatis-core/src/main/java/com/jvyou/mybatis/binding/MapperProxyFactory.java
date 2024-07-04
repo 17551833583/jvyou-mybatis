@@ -8,8 +8,8 @@ import java.lang.reflect.Proxy;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 23:31
- * @Description Mapper 代理对象工厂类
+ * @since 2024/4/25 23:31
+ * ---description Mapper 代理对象工厂类
  */
 public class MapperProxyFactory {
 
@@ -17,7 +17,6 @@ public class MapperProxyFactory {
      * 获取 Mapper 接口的代理对象
      *
      * @param mapperClass mapper 接口类型
-     * @param <T>         mapper 接口
      * @return 获取 Mapper 接口的代理对象
      */
     public <T> T getProxy(Class<T> mapperClass, SqlSession sqlSession) {

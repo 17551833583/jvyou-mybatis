@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/28 19:38
- * @Description 操作增删改查
+ * @since 2024/4/28 19:38
+ * ---description 操作增删改查
  */
 public interface SqlSession {
 

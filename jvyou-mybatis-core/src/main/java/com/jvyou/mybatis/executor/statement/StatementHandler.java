@@ -9,8 +9,8 @@ import java.sql.Statement;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/15 22:22
- * @Description 语句处理器接口
+ * @since 2024/5/15 22:22
+ * ---description 语句处理器接口
  */
 public interface StatementHandler {
 

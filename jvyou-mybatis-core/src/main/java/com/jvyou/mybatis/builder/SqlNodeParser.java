@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/2 16:52
- * @Description SqlNode解析器，使用dom4j解析xml文件，将 select、update、insert、delete等标签下面的子节点解析成SqlNode
+ * @since 2024/7/2 16:52
+ * ---description SqlNode解析器，使用dom4j解析xml文件，将 select、update、insert、delete等标签下面的子节点解析成SqlNode
  */
 public class SqlNodeParser {
 

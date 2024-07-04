@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/18 20:54
- * @Description 数据库连接池
+ * @since 2024/5/18 20:54
+ * ---description 数据库连接池
  */
 public class PooledDataSource implements DataSource {
 

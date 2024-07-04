@@ -9,8 +9,8 @@ import java.util.Properties;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/28 21:44
- * @Description SqlSession 工厂构建者
+ * @since 2024/4/28 21:44
+ * ---description SqlSession 工厂构建者
  */
 public class SqlSessionFactoryBuilder {
     public SqlSessionFactory build() {

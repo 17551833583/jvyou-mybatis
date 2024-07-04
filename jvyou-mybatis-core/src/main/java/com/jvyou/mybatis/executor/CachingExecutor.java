@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/21 21:25
- * @Description 缓存执行器（装饰者模式）
+ * @since 2024/5/21 21:25
+ * ---description 缓存执行器（装饰者模式）
  */
 public class CachingExecutor implements Executor {
 

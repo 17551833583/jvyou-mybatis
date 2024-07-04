@@ -6,8 +6,8 @@ import ognl.Ognl;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/4 0:20
- * @Description 用于处理动态SQL的 ${} 标记
+ * @since 2024/7/4 0:20
+ * ---description 用于处理动态SQL的 ${} 标记
  */
 public class BindingTokenHandler implements TokenHandler {
 

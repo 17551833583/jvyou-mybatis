@@ -14,8 +14,8 @@ import java.sql.Statement;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/15 22:37
- * @Description 预编译语句处理器
+ * @since 2024/5/15 22:37
+ * ---description 预编译语句处理器
  */
 public class PreparedStatementHandler implements StatementHandler {
 

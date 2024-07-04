@@ -13,8 +13,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/2 16:46
- * @Description XML文件扫描器
+ * @since 2024/7/2 16:46
+ * ---description XML文件扫描器
  */
 public class XMLScanner {
 

@@ -9,8 +9,8 @@ import java.util.Properties;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/30 20:14
- * @Description 分页插件
+ * @since 2024/4/30 20:14
+ * ---description 分页插件
  */
 @Intercepts({
         @Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class}),

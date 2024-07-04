@@ -15,8 +15,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/14 14:05
- * @Description 默认结果集处理器
+ * @since 2024/5/14 14:05
+ * ---description 默认结果集处理器
  */
 public class DefaultResultSetHandler implements ResultSetHandler {
 

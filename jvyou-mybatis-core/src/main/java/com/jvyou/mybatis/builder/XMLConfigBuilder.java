@@ -26,8 +26,8 @@ import java.util.Set;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/27 19:59
- * @Description XML配置构建器
+ * @since 2024/4/27 19:59
+ * ---description XML配置构建器
  */
 public class XMLConfigBuilder {
 

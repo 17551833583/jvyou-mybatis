@@ -9,8 +9,8 @@ import java.util.Properties;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/30 20:15
- * @Description SQL 日志打印插件
+ * @since 2024/4/30 20:15
+ * ---description SQL 日志打印插件
  */
 @Intercepts({
         @Signature(type = StatementHandler.class, method = "query", args = Statement.class),

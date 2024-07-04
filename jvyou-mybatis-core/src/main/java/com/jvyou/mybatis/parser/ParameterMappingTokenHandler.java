@@ -8,8 +8,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 14:09
- * @Description Mapper 参数标记处理器,用于处理 #{} 标记
+ * @since 2024/4/26 14:09
+ * ---description Mapper 参数标记处理器,用于处理 #{} 标记
  */
 public class ParameterMappingTokenHandler implements TokenHandler, SymbolKeyword {
 

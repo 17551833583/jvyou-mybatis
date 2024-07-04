@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/27 22:18
- * @Description
+ * @since 2024/4/27 22:18
+ * ---description
  */
 class XMLConfigBuilderTest {
 

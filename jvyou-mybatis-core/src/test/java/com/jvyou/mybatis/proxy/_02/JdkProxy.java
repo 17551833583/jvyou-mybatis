@@ -7,8 +7,8 @@ import java.lang.reflect.Proxy;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 22:01
- * @Description JDK 动态代理类
+ * @since 2024/4/25 22:01
+ * ---description JDK 动态代理类
  */
 public class JdkProxy<T> implements InvocationHandler {
 

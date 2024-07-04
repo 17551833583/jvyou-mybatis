@@ -5,8 +5,8 @@ import com.jvyou.mybatis.xml.DynamicContext;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/1 1:12
- * @Description where标签
+ * @since 2024/7/1 1:12
+ * ---description where标签
  */
 public class WhereSqlNode implements SqlNode {
 

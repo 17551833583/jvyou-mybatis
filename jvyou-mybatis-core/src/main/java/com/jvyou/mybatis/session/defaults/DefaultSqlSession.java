@@ -13,8 +13,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/28 20:08
- * @Description 默认 SqlSession
+ * @since 2024/4/28 20:08
+ * ---description 默认 SqlSession
  */
 public class DefaultSqlSession implements SqlSession {
 

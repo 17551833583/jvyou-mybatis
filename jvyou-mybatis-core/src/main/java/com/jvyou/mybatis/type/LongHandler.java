@@ -7,8 +7,8 @@ import java.sql.SQLException;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/7/3 15:30
- * @Description Long类型处理器
+ * @since 2024/7/3 15:30
+ * ---description Long类型处理器
  */
 public class LongHandler implements TypeHandler<Long> {
     @Override

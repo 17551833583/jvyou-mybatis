@@ -8,8 +8,8 @@ import java.sql.*;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 19:59
- * @Description 测试原生的 JDBC 接口
+ * @since 2024/4/25 19:59
+ * ---description 测试原生的 JDBC 接口
  */
 public class TestJdbc {
 

@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/25 21:51
- * @Description 测试静态代理
+ * @since 2024/4/25 21:51
+ * ---description 测试静态代理
  */
 public class TestStaticProxy {
 

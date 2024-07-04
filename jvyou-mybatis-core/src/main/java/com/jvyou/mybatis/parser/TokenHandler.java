@@ -3,8 +3,8 @@ package com.jvyou.mybatis.parser;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 14:07
- * @Description 标记处理器
+ * @since 2024/4/26 14:07
+ * ---description 标记处理器
  */
 public interface TokenHandler {
 

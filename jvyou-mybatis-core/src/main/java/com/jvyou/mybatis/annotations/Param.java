@@ -8,8 +8,8 @@ import java.lang.annotation.Target;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 16:28
- * @Description SQL 参数
+ * @since 2024/4/26 16:28
+ * ---description SQL 参数
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)

@@ -10,8 +10,8 @@ import com.jvyou.mybatis.transaction.Transaction;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/28 21:36
- * @Description 默认 SqlSession 工厂实现类
+ * @since 2024/4/28 21:36
+ * ---description 默认 SqlSession 工厂实现类
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
 

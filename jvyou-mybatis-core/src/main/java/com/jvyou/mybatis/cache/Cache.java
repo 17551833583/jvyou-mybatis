@@ -3,8 +3,8 @@ package com.jvyou.mybatis.cache;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/5/21 13:45
- * @Description 缓存接口
+ * @since 2024/5/21 13:45
+ * ---description 缓存接口
  */
 public interface Cache {
 

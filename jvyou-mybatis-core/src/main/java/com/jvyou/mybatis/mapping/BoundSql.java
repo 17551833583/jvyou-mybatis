@@ -9,8 +9,8 @@ import java.util.List;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/29 19:20
- * @Description 解析后的 SQL 以及参数名称 列表
+ * @since 2024/4/29 19:20
+ * ---description 解析后的 SQL 以及参数名称 列表
  */
 @Data
 @AllArgsConstructor

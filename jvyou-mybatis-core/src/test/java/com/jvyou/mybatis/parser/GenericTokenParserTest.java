@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Test;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 13:36
- * @Description
+ * @since 2024/4/26 13:36
+ * ---description
  */
 class GenericTokenParserTest {
 

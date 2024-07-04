@@ -11,8 +11,8 @@ import java.util.Set;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/30 14:37
- * @Description 插件代理类
+ * @since 2024/4/30 14:37
+ * ---description 插件代理类
  */
 public class Plugin implements InvocationHandler {
 

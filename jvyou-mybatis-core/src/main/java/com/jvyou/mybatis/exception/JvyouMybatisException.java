@@ -3,8 +3,8 @@ package com.jvyou.mybatis.exception;
 /**
  * @author 橘柚
  * @version 1.0-SNAPSHOT
- * @Date 2024/4/26 13:33
- * @Description 橘柚 Mybatis 异常
+ * @since 2024/4/26 13:33
+ * ---description 橘柚 Mybatis 异常
  */
 public class JvyouMybatisException extends RuntimeException {
 
